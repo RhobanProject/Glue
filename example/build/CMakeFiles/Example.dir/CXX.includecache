@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gregwar/Glue/example/Printer.cpp
+cstdio
+-
+Printer.h
+/home/gregwar/Glue/example/Printer.h
+
+/home/gregwar/Glue/example/Printer.h
+
