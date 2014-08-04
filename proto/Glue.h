@@ -32,20 +32,6 @@ namespace Glue
     {
         return false;
     }
-
-    template<typename T>
-        class Output
-        {
-            public:
-                virtual T get(std::string name)=0;
-        };
-
-    template<typename T>
-        class Input
-        {
-            public:
-                virtual void set(std::string name, T value)=0;
-        };
 }
 
 #endif
