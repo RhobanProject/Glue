@@ -8,4 +8,3 @@ files = sys.argv[1:]
 for headerFile in files:
     glue.parse(headerFile)
 
-print(glue.blocks)

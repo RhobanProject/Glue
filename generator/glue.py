@@ -45,9 +45,10 @@ class GlueIO:
         self.write = ''
 
 class GlueBlock:
-    def __init__(self, family, name):
+    def __init__(self, family, name, namespace):
         self.family = family
         self.name = name
+        self.namespace = namespace
         self.inputs = {}
         self.outputs = {}
         self.types = []
@@ -104,7 +105,7 @@ class GlueBlock:
     @classmethod
     def create(cls, family, data):
         name = data['name']
-        block = GlueBlock(family, name)
+        block = GlueBlock(family, name, data['namespace'])
         
         for visible in data['methods']:
             for method in data['methods'][visible]:

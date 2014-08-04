@@ -1,6 +1,8 @@
 #ifndef _CONSTANT_H
 #define _CONSTANT_H
 
+namespace Pouet
+{
 /**
  * Glue:Block(family=core)
  */
@@ -17,5 +19,6 @@ class Constant
          */
         float *x;
 };
+}
 
 #endif
