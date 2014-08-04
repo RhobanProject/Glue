@@ -7,6 +7,7 @@
 namespace Glue
 {
     class Scene;
+    class LinkBase;
     class Node;
 
     /**
@@ -34,7 +35,7 @@ namespace Glue
      * This have to be generated to instanciate the right link depending on which
      * type is used
      */
-    void glue_linker(Scene *scene, std::string type, 
+    LinkBase *glue_linker(Scene *scene, std::string type, 
             Node *from, int start, Node *to, int end);
 
     /**

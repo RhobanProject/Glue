@@ -11,7 +11,6 @@ namespace Glue
     {
         public:
             void add(Node *node);
-            void addLink(LinkBase *link);
             void connect(std::string type, Node *from, std::string start, Node *to, std::string end);
             void tick();
 
