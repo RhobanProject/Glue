@@ -7,6 +7,7 @@ namespace Glue
     {
         public:
             virtual ~Node() {}
+            virtual void glue_import(std::string data)=0;
     };
 }
 

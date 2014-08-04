@@ -2,6 +2,7 @@
 #define _GLUE_CONSTANT_H
 
 #include "GlueTypes.h"
+#include "../Node.h"
 #include "../Constant.h"
 
 namespace Glue
@@ -11,9 +12,10 @@ namespace Glue
     public Node_get_int
     {
         public:
+            void glue_import(std::string data);
             float get_float(int index);
             void set_float(int index, float value_);
-            int get_int(int index);
+            int get_int(int index);        
     };
 }
 

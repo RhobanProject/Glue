@@ -9,16 +9,11 @@ int main()
     Glue::Scene scene;
     
     // Creates a constant
-    Glue::GlueConstant *constant = new Glue::GlueConstant;
-    constant->value = 123.6;
-
-    Glue::Node *node1 = constant;
+    Glue::Node *node1 = Glue::glue_instanciate("Constant", "123.6");
     scene.add(node1);
 
     // Creates a printer
-    Glue::GluePrinter *printer = new Glue::GluePrinter;
-
-    Glue::Node *node2 = printer;
+    Glue::Node *node2 = Glue::glue_instanciate("Printer", "");
     scene.add(node2);
 
     // Connects the constant to the printer

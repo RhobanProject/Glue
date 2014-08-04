@@ -2,6 +2,13 @@
 
 namespace Glue
 {
+    void GlueConstant::glue_import(std::string data)
+    {
+        if (!glue_deserialize<float>(data, value)) {
+            value = 0.0;
+        }
+    }
+
     float GlueConstant::get_float(int index) {
         switch (index) {
             case INDEX_VALUE:
