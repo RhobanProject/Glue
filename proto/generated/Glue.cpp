@@ -34,7 +34,7 @@ namespace Glue
         }                                               
 
 
-    LinkBase *glue_linker(Scene *scene, std::string type, Node *from, int start, Node *to, int end)
+    LinkBase *glue_link(std::string type, Node *from, int start, Node *to, int end)
     {
         if (type == "float" ) {                                   
             return new Link<float>(from, start, to, end);

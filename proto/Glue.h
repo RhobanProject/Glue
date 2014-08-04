@@ -35,8 +35,7 @@ namespace Glue
      * This have to be generated to instanciate the right link depending on which
      * type is used
      */
-    LinkBase *glue_linker(Scene *scene, std::string type, 
-            Node *from, int start, Node *to, int end);
+    LinkBase *glue_link(std::string type, Node *from, int start, Node *to, int end);
 
     /**
      * Conversion to get the index of an i/o name
