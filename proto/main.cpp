@@ -1,5 +1,5 @@
 #include <string>
-#include "Glue.h"
+#include "glue.h"
 #include "Scene.h"
 #include "generated/GlueConstant.h"
 #include "generated/GluePrinter.h"

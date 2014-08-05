@@ -1,7 +1,7 @@
 #ifndef _GLUE_SCENE_H
 #define _GLUE_SCENE_H
 
-#include "Glue.h"
+#include "glue.h"
 #include "Node.h"
 #include "Link.h"
 

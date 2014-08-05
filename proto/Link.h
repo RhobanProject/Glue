@@ -1,7 +1,7 @@
 #ifndef _GLUE_LINK_H
 #define _GLUE_LINK_H
 
-#include "Glue.h"
+#include "glue.h"
 
 namespace Glue
 {

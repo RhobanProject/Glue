@@ -9,7 +9,7 @@ namespace Glue
 
     void Scene::connect(std::string type, Node *from, std::string start, Node *to, std::string end)
     {
-        links.push_back(glue_linker(this, type, from, glue_name_to_index(start), to, glue_name_to_index(end)));
+        links.push_back(glue_link(type, from, glue_name_to_index(start), to, glue_name_to_index(end)));
     }
 
     void Scene::tick()
