@@ -9,28 +9,28 @@ namespace Glue
         float glue_getter<float>(Node *node, int index)
         {                                                                     
             Node_get_float *n = dynamic_cast<Node_get_float *>(node);   
-            return n->get_float(index);
+            return n->glue_get_float(index);
         }                                       
 
     template<>                                                                
         void glue_setter<float>(Node *node, int index, float value)   
         {                                                                     
             Node_set_float *n = dynamic_cast<Node_set_float *>(node);   
-            n->set_float(index, value);
+            n->glue_set_float(index, value);
         }                                               
     
     template<>                                                                
         int glue_getter<int>(Node *node, int index)
         {                                                                     
             Node_get_int *n = dynamic_cast<Node_get_int *>(node);   
-            return n->get_int(index);
+            return n->glue_get_int(index);
         }                                                                     
 
     template<>                                                                
         void glue_setter<int>(Node *node, int index, int value)   
         {                                                                     
             Node_set_int *n = dynamic_cast<Node_set_int *>(node);   
-            n->set_int (index, value);
+            n->glue_set_int (index, value);
         }                                               
 
 

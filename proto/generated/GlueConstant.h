@@ -13,9 +13,10 @@ namespace Glue
     {
         public:
             void glue_import(std::string data);
-            float get_float(int index);
-            void set_float(int index, float value_);
-            int get_int(int index);        
+            float glue_get_float(int index);
+            void glue_set_float(int index, float value_);
+            int glue_get_int(int index);        
+            std::string glue_output_type(int index);
     };
 }
 

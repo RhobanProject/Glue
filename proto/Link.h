@@ -9,6 +9,7 @@ namespace Glue
     {
         public:
             virtual void tick()=0;
+            int id;
     };
 
     template<typename T>

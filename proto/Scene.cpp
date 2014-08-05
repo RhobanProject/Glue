@@ -4,18 +4,26 @@ namespace Glue
 {
     void Scene::add(Node *node)
     {
-        nodes.push_back(node);
+        nodes[node->glue_id] = node;
     }
 
-    void Scene::connect(std::string type, Node *from, std::string start, Node *to, std::string end)
+    void Scene::connect(int linkId, int from_id, std::string start, int to_id, std::string end)
     {
-        links.push_back(glue_link(type, from, glue_name_to_index(start), to, glue_name_to_index(end)));
+        Node *from = nodes[from_id];
+        Node *to = nodes[to_id];
+        int from_index = glue_name_to_index(start);
+        int to_index = glue_name_to_index(end);
+        std::string type = to->glue_output_type(to_index);
+
+        LinkBase *link = glue_link(type, from, from_index, to, to_index);
+        link->id = linkId;
+        links[linkId] = link;
     }
 
     void Scene::tick()
     {
         for (auto link : links) {
-            link->tick();
+            link.second->tick();
         }
     }
 }

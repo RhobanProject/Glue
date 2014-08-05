@@ -12,7 +12,8 @@ namespace Glue
     {
         public:
             void glue_import(std::string data);
-            void set_int(int index, int value);
+            std::string glue_output_type(int index);
+            void glue_set_int(int index, int value);
     };
 }
 

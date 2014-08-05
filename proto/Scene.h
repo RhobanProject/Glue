@@ -1,6 +1,7 @@
 #ifndef _GLUE_SCENE_H
 #define _GLUE_SCENE_H
 
+#include <map>
 #include "glue.h"
 #include "Node.h"
 #include "Link.h"
@@ -11,11 +12,11 @@ namespace Glue
     {
         public:
             void add(Node *node);
-            void connect(std::string type, Node *from, std::string start, Node *to, std::string end);
+            void connect(int linkId, int from_id, std::string start, int to_id, std::string end);
             void tick();
 
-            std::vector<Node*> nodes;
-            std::vector<LinkBase*> links;
+            std::map<int, Node*> nodes;
+            std::map<int, LinkBase*> links;
     };
 }
 
