@@ -9,17 +9,17 @@ set(GLUE "${CMAKE_SOURCE_DIR}/../"
 
 include("${GLUE}/Glue.cmake")
 
-glue_add(convert.cpp)
-
 # Building library
 set(ALL_SOURCES
-    generated/GlueConstant.cpp 
-    generated/GluePrinter.cpp 
-    generated/glue.cpp 
-
     main.cpp 
     Printer.cpp
     )
 
-add_library(Proto ${ALL_SOURCES})
-glue_run(Proto)
+glue_add(convert.cpp)
+glue_add(generated/GlueConstant.cpp)
+glue_add(generated/GluePrinter.cpp)
+glue_add(generated/glue.cpp)
+
+glue_run()
+add_executable(proto ${ALL_SOURCES})
+target_link_libraries(proto glue)

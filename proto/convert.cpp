@@ -2,8 +2,7 @@
 #include <math.h>
 
 namespace Glue {
-    template<>
-    int glue_convert<float, int>(float value) {
+    int glue_convert_float_int(float value) {
         return round(value);
     }
 }

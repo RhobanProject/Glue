@@ -21,7 +21,7 @@ set(GLUE_FILES "" CACHE STRING "Glue files")
 set(GLUE_ADDITIONAL "" CACHE STRING "Glue additional files")
 
 macro(glue_parse_absolute file)
-    set(GLUE_FILES ${GLUE_FILES} ${file})
+    set(GLUE_FILES "${GLUE_FILES}" "${file}")
 endmacro()
 
 macro(glue_parse file)
@@ -33,7 +33,7 @@ macro(glue_add file)
 endmacro()
 
 # Run the glue dependences
-macro(glue_run libs)
+macro(glue_run)
     set(GENERATED_FILES
         "${GLUE_OUTPUT_DIR}/glue.cpp"
     )
@@ -51,6 +51,6 @@ macro(glue_run libs)
         "${GLUE}/deserialize.cpp"
     )
 
-    add_executable(glue ${GLUE_SOURCES})
+    add_library(glue ${GLUE_SOURCES})
     target_link_libraries(glue ${libs} json)
 endmacro()

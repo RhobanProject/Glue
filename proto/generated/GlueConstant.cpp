@@ -1,3 +1,6 @@
+#include <glue/glue.h>
+#include "deserialize.h"
+#include "convert.h"
 #include "GlueConstant.h"
 
 namespace Glue
@@ -5,7 +8,7 @@ namespace Glue
     void GlueConstant::glue_import(Json::Value data)
     {
         if (data.isMember("value")) {
-            if (!glue_deserialize<float>(data["value"], value)) {
+            if (!glue_deserialize_float(data["value"], value)) {
                 value = 0.0;
             }
         }
@@ -44,7 +47,7 @@ namespace Glue
     {
         switch (index) {
             case INDEX_VALUE:
-                return Glue::glue_convert<float, int>(glue_get_float(index));
+                return Glue::glue_convert_float_int(glue_get_float(index));
                 break;
         }
 

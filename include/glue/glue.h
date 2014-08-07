@@ -23,16 +23,6 @@ namespace Glue
     {}
 
     /**
-     * This should be specialized for each compatible types that have special 
-     * casting
-     */
-    template<typename T, typename Q>
-    Q glue_convert(T t)
-    {
-        return (Q)t;
-    }
-
-    /**
      * This have to be generated to instanciate the right link depending on which
      * type is used
      */
@@ -42,15 +32,6 @@ namespace Glue
      * Conversion to get the index of an i/o name
      */
     int glue_name_to_index(std::string name);
-
-    /**
-     * Deserializes data of a given type
-     */
-    template<typename T>
-    bool glue_deserialize(Json::Value data, T &var)
-    {
-        return false;
-    }
 
     /**
      * Creates an instance of a given type with given data for its nodes

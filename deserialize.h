@@ -1,6 +1,5 @@
 #include <string>
 #include <cstdlib>
-#include <json/json.h>
 
 namespace Glue
 {
