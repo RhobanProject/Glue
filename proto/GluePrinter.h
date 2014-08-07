@@ -1,9 +1,9 @@
 #ifndef _GLUE_PRINTER_H
 #define _GLUE_PRINTER_H
 
+#include <Node.h>
 #include "GlueTypes.h"
-#include "../Node.h"
-#include "../Printer.h"
+#include "Printer.h"
 
 namespace Glue
 {

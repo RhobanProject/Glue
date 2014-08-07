@@ -16,6 +16,8 @@ namespace Glue
                 return "float";
             break;
         }
+
+        return "";
     }
 
     float GlueConstant::glue_get_float(int index) {
@@ -24,6 +26,8 @@ namespace Glue
                 return value; 
                 break;
         }
+
+        return 0.0;
     }
 
     void GlueConstant::glue_set_float(int index, float value_) {
@@ -41,5 +45,7 @@ namespace Glue
                 return Glue::glue_convert<float, int>(glue_get_float(index));
                 break;
         }
+
+        return 0;
     }
 }

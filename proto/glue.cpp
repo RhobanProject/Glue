@@ -42,6 +42,8 @@ namespace Glue
         if (type == "int") {
             return new Link<int>(from, start, to, end);
         }
+
+        return NULL;
     }
     
     int glue_name_to_index(std::string name)
@@ -52,6 +54,8 @@ namespace Glue
         if (name == "print") {
             return INDEX_PRINT;
         }
+
+        return -1;
     }
     
     Node *glue_instanciate(std::string type, std::string data)

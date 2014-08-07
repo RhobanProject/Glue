@@ -1,6 +1,6 @@
 #include <string>
 #include <cstdlib>
-#include "glue.h"
+#include <glue.h>
 
 namespace Glue
 {

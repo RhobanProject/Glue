@@ -13,6 +13,8 @@ namespace Glue
                 return "int";
             break;
         }
+
+        return "";
     }
 
     void GluePrinter::glue_set_int(int index, int value)

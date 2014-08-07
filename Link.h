@@ -27,8 +27,10 @@ namespace Glue
                 glue_setter<T>(to, end, tmp);
             }
 
-            Node *from, *to;
-            int start, end;
+            Node *from;
+            int start;
+            Node *to;
+            int end;
     };
 }
 

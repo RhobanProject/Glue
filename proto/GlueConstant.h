@@ -1,9 +1,9 @@
 #ifndef _GLUE_CONSTANT_H
 #define _GLUE_CONSTANT_H
 
+#include <Node.h>
 #include "GlueTypes.h"
-#include "../Node.h"
-#include "../Constant.h"
+#include "Constant.h"
 
 namespace Glue
 {

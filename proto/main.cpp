@@ -1,8 +1,8 @@
 #include <string>
 #include "glue.h"
 #include "Scene.h"
-#include "generated/GlueConstant.h"
-#include "generated/GluePrinter.h"
+#include "GlueConstant.h"
+#include "GluePrinter.h"
 
 int main()
 {
