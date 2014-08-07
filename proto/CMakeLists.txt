@@ -14,9 +14,10 @@ glue_add(deserialize.cpp)
 
 # Building library
 set(ALL_SOURCES
-    GlueConstant.cpp 
-    glue.cpp 
-    GluePrinter.cpp 
+    generated/GlueConstant.cpp 
+    generated/GluePrinter.cpp 
+    generated/glue.cpp 
+
     main.cpp 
     Printer.cpp
     )

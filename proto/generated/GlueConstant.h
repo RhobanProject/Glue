@@ -3,7 +3,7 @@
 
 #include <glue/Node.h>
 #include "GlueTypes.h"
-#include "Constant.h"
+#include "../Constant.h"
 
 namespace Glue
 {
