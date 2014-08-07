@@ -1,2 +1,0 @@
-/usr/bin/ar cr libExample.a  CMakeFiles/Example.dir/Printer.cpp.o
-/usr/bin/ranlib libExample.a

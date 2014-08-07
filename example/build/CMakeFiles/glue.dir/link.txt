@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/glue.dir/glue/GlueTypes.cpp.o  -o glue -rdynamic libExample.a 

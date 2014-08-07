@@ -1,2 +1,0 @@
-/home/gregwar/Glue/example/build/CMakeFiles/Example.dir
-/home/gregwar/Glue/example/build/CMakeFiles/glue.dir

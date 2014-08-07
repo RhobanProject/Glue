@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-1bbd2ab5cce22001c3876cd3beec832e glue/GlueTypes.cpp
