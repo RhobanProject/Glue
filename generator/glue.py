@@ -36,21 +36,23 @@ class GlueAnnotation:
                     params[part.strip()] = True
         return params
 
-class GlueIO:
+class GlueField:
     def __init__(self, typeName, name, default):
         self.typeName = typeName
         self.name = name
         self.default = default
         self.read = ''
         self.write = ''
+        self.attrs = []
+        if default:
+            self.attrs += ['editable']
 
 class GlueBlock:
     def __init__(self, family, name, namespace):
         self.family = family
         self.name = name
         self.namespace = namespace
-        self.inputs = {}
-        self.outputs = {}
+        self.fields = []
         self.types = []
 
     def id(self):
@@ -60,47 +62,48 @@ class GlueBlock:
         if typeName not in self.types:
             self.types += [typeName]
 
-    def create_io(self, typeName, name, annotation):
+    def create_field(self, typeName, name, annotation):
         self.add_type(typeName)
         default = None
         if 'name' in annotation.params:
             name = annotation.params['name']
         if 'default' in annotation.params:
             default = annotation.params['default']
-        return GlueIO(typeName, name, default)
+        return GlueField(typeName, name, default)
 
-    def add_input(self, io):
-        self.inputs[io.name] = io
-
-    def add_output(self, io):
-        self.outputs[io.name] = io
+    def add_field(self, field):
+        self.fields += [field]
 
     def add_input_method(self, method, annotation):
         if len(method['parameters']) != 1:
             glue_error("Input method %s::%s() should have exactly one argument"
                     % (self.name, method['name']))
         param = method['parameters'][0]
-        io = self.create_io(param['type'], method['name'], annotation)
-        io.write = '%s(%s)' % (method['name'], '%s')
-        self.add_input(io)
+        field = self.create_field(param['type'], method['name'], annotation)
+        field.write = '%s(%s)' % (method['name'], '%s')
+        field.attrs += ['input']
+        self.add_field(field)
 
     def add_output_method(self, method, annotation):
         if len(method['parameters']) != 0:
             glue_error("Output method %s::%s() should not take any argument"
                     % (self.name, method['name']))
-        io = self.create_io(method['rtnType'], method['name'], annotation)
-        io.read = '%s()' % method['name']
-        self.add_output(io)
+        field = self.create_field(method['rtnType'], method['name'], annotation)
+        field.read = '%s()' % method['name']
+        field.attrs += ['output']
+        self.add_fields(field)
 
     def add_input_prop(self, prop, annotation):
-        io = self.create_io(prop['type'], method['name'], annotation)
-        io.write = '%s = %s' % (prop['name'], '%s')
-        self.add_input(io)
+        field = self.create_field(prop['type'], method['name'], annotation)
+        field.write = '%s = %s' % (prop['name'], '%s')
+        field.attrs += ['input']
+        self.add_field(field)
 
     def add_output_prop(self, prop, annotation):
-        io = self.create_io(prop['type'], prop['name'], annotation)
-        io.read = '%s' % prop['name']
-        self.add_output(io)
+        field = self.create_field(prop['type'], prop['name'], annotation)
+        field.read = '%s' % prop['name']
+        field.attrs += ['output']
+        self.add_field(field)
 
     @classmethod
     def create(cls, family, data):
