@@ -1,6 +1,6 @@
 #include <string>
-#include "glue.h"
-#include "Scene.h"
+#include <glue/glue.h>
+#include <glue/Scene.h>
 #include "GlueConstant.h"
 #include "GluePrinter.h"
 
@@ -9,7 +9,7 @@ int main()
     Glue::Scene scene;
     
     // Creates a constant
-    Glue::Node *node1 = Glue::glue_instanciate("Constant", "123.6");
+    Glue::Node *node1 = Glue::glue_instanciate("Constant", "{\"value\":123.6}");
     node1->glue_id = 1;
     scene.add(node1);
 

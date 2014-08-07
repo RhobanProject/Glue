@@ -1,4 +1,5 @@
-#include "../Scene.h"
+#include <iostream>
+#include <glue/Scene.h>
 #include "GlueTypes.h"
 #include "GluePrinter.h"
 #include "GlueConstant.h"
@@ -60,6 +61,9 @@ namespace Glue
     
     Node *glue_instanciate(std::string type, std::string data)
     {
+        Json::Value root;
+        Json::Reader reader;
+
         Node *node = NULL;
         if (type == "Constant") {
             node = new GlueConstant;
@@ -67,7 +71,9 @@ namespace Glue
         if (type == "Printer") {
             node = new GluePrinter;
         }
-        node->glue_import(data);
+        if (reader.parse(data, root)) {
+            node->glue_import(root);
+        }
 
         return node;
     }

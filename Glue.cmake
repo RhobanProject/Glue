@@ -3,10 +3,15 @@ if (NOT DEFINED GLUE)
     message(FATAL_ERROR "You should set the \$GLUE variable")
 endif()
 
+# JSON Support
+add_subdirectory("${GLUE}/json" json)
+set(JSON_HEADERS "${GLUE}/json/include" 
+    CACHE STRING "Json headers")
+include_directories("${JSON_HEADERS}")
 
 # Output directory is current build/glue
 set(GLUE_OUTPUT_DIR "${PROJECT_BINARY_DIR}/glue_generated/")
-include_directories("${GLUE}" "${GLUE_OUTPUT_DIR}")
+include_directories("${GLUE}/include/" "${GLUE_OUTPUT_DIR}")
 
 # Glue generator
 set(GLUE_GENERATOR "${GLUE}/generator/generator.py")
@@ -46,5 +51,5 @@ macro(glue_run libs)
     )
 
     add_executable(glue ${GLUE_SOURCES})
-    target_link_libraries(glue ${libs})
+    target_link_libraries(glue ${libs} json)
 endmacro()

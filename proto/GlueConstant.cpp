@@ -2,10 +2,12 @@
 
 namespace Glue
 {
-    void GlueConstant::glue_import(std::string data)
+    void GlueConstant::glue_import(Json::Value data)
     {
-        if (!glue_deserialize<float>(data, value)) {
-            value = 0.0;
+        if (data.isMember("value")) {
+            if (!glue_deserialize<float>(data["value"], value)) {
+                value = 0.0;
+            }
         }
     }
     

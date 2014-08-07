@@ -1,13 +1,17 @@
 #include <string>
 #include <cstdlib>
-#include <glue.h>
+#include <glue/glue.h>
 
 namespace Glue
 {
     template<>
-        bool glue_deserialize(std::string data, float &value)
+        bool glue_deserialize(Json::Value data, float &value)
         {
-            value = atof(data.c_str());
-            return true;
+            if (data.isNumeric()) {
+                value = data.asFloat();
+                return true;
+            } else {
+                return true;
+            }
         }
 }

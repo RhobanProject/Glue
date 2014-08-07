@@ -2,7 +2,7 @@
 
 namespace Glue
 {
-    void GluePrinter::glue_import(std::string data)
+    void GluePrinter::glue_import(Json::Value data)
     {
     }
             

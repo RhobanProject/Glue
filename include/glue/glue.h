@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <json/json.h>
 
 namespace Glue
 {
@@ -46,7 +47,7 @@ namespace Glue
      * Deserializes data of a given type
      */
     template<typename T>
-    bool glue_deserialize(std::string data, T &var)
+    bool glue_deserialize(Json::Value data, T &var)
     {
         return false;
     }

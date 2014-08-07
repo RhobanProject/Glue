@@ -1,7 +1,7 @@
 #ifndef _GLUE_TYPES_H
 #define _GLUE_TYPES_H
 
-#include "../glue.h"
+#include <glue/glue.h>
 
 namespace Glue
 {

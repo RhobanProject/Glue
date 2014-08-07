@@ -1,5 +1,5 @@
-#include "math.h"
-#include "glue.h"
+#include <glue/glue.h>
+#include <math.h>
 
 namespace Glue {
     template<>

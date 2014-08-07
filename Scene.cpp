@@ -1,4 +1,4 @@
-#include "Scene.h"
+#include <glue/Scene.h>
 
 namespace Glue
 {
