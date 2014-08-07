@@ -48,6 +48,7 @@ macro(glue_run libs)
         ${GENERATED_FILES}
         ${GLUE_ADDITIONAL}
         "${GLUE}/Scene.cpp"
+        "${GLUE}/deserialize.cpp"
     )
 
     add_executable(glue ${GLUE_SOURCES})

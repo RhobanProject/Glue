@@ -10,7 +10,6 @@ set(GLUE "${CMAKE_SOURCE_DIR}/../"
 include("${GLUE}/Glue.cmake")
 
 glue_add(convert.cpp)
-glue_add(deserialize.cpp)
 
 # Building library
 set(ALL_SOURCES
