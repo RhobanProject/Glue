@@ -9,6 +9,9 @@ set(JSON_HEADERS "${GLUE}/json/include"
     CACHE STRING "Json headers")
 include_directories("${JSON_HEADERS}")
 
+# Mongoose web support
+add_subdirectory("${GLUE}/mongoose-cpp/" mongoose)
+
 # Output directory is current build/glue
 set(GLUE_OUTPUT_DIR "${PROJECT_BINARY_DIR}/glue/")
 include_directories("${GLUE}/include/" "${GLUE_OUTPUT_DIR}")
@@ -57,5 +60,5 @@ macro(glue_run)
     )
 
     add_library(glue ${GLUE_SOURCES})
-    target_link_libraries(glue ${libs} json)
+    target_link_libraries(glue json _mongoose)
 endmacro()
