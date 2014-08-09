@@ -154,3 +154,6 @@ class Glue:
                 if 'family' in annotation.params:
                     family = annotation.params['family']
                 self.add_block(GlueBlock.create(family, classInfo))
+
+    def generate_files(self, output_dir):
+        open(output_dir+'/glue.cpp', 'w').write('')

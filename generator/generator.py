@@ -27,4 +27,4 @@ files = sys.argv[2:]
 for headerFile in files:
     glue.parse(headerFile)
 
-open(output_dir+'/glue.cpp', 'w').write('')
+glue.generate_files(output_dir)
