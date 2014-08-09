@@ -1,3 +1,6 @@
 [submodule "blocks.js"]
 	path = blocks.js
 	url = https://www.github.com/Gregwar/blocks.js.git
+[submodule "mongoose"]
+	path = mongoose
+	url = https://www.github.com/Gregwar/mongoose-cpp.git
