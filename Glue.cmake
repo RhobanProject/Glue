@@ -10,7 +10,7 @@ set(JSON_HEADERS "${GLUE}/json/include"
 include_directories("${JSON_HEADERS}")
 
 # Mongoose web support
-add_subdirectory("${GLUE}/mongoose-cpp/" mongoose)
+add_subdirectory("${GLUE}/mongoose/" mongoose)
 
 # Output directory is current build/glue
 set(GLUE_OUTPUT_DIR "${PROJECT_BINARY_DIR}/glue/")
