@@ -17,6 +17,7 @@ namespace Glue
             /**
              * Tells the type of the nth input/output
              */
+            virtual std::string glue_input_type(int index)=0;
             virtual std::string glue_output_type(int index)=0;
             
             /**

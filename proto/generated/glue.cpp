@@ -60,11 +60,8 @@ namespace Glue
         return -1;
     }
     
-    Node *glue_instanciate(std::string type, std::string data)
+    Node *glue_instanciate(std::string type, Json::Value data)
     {
-        Json::Value root;
-        Json::Reader reader;
-
         Node *node = NULL;
         if (type == "Constant") {
             node = new GlueConstant;
@@ -72,8 +69,8 @@ namespace Glue
         if (type == "Printer") {
             node = new GluePrinter;
         }
-        if (reader.parse(data, root)) {
-            node->glue_import(root);
+        if (node != NULL) {
+            node->glue_import(data);
         }
 
         return node;

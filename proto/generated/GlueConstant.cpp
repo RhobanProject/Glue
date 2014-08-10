@@ -1,3 +1,4 @@
+#include <iostream>
 #include <glue/glue.h>
 #include "deserialize.h"
 #include "convert.h"
@@ -12,6 +13,11 @@ namespace Glue
                 value = 0.0;
             }
         }
+    }
+
+    std::string GlueConstant::glue_input_type(int index)
+    {
+        return "";
     }
     
     std::string GlueConstant::glue_output_type(int index)

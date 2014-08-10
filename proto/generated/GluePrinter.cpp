@@ -6,7 +6,7 @@ namespace Glue
     {
     }
             
-    std::string GluePrinter::glue_output_type(int index)
+    std::string GluePrinter::glue_input_type(int index)
     {
         switch (index) {
             case INDEX_PRINT:
@@ -14,6 +14,11 @@ namespace Glue
             break;
         }
 
+        return "";
+    }
+            
+    std::string GluePrinter::glue_output_type(int index)
+    {
         return "";
     }
 

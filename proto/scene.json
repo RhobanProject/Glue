@@ -1,0 +1,23 @@
+{
+    "blocks": [
+        {
+            "id": 1,
+            "type": "Constant",
+            "values": 123.6
+        },
+        {
+            "id": 2,
+            "type": "Printer",
+            "values": {}
+        }
+    ],
+    "edges": [
+        {
+            "id": 1,
+            "block1": 1,
+            "connector1": ["value"],
+            "block2": 2,
+            "connector2": ["print"]
+        }
+    ]
+}

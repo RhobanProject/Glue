@@ -37,7 +37,7 @@ namespace Glue
     /**
      * Creates an instance of a given type with given data for its nodes
      */
-    Node *glue_instanciate(std::string type, std::string data);
+    Node *glue_instanciate(std::string type, Json::Value data);
 }
 
 #endif
