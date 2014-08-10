@@ -13,9 +13,9 @@ namespace Glue
     {
         public:
             void glue_import(Json::Value data);
-            float glue_get_float(int index);
-            void glue_set_float(int index, float value_);
-            int glue_get_int(int index);        
+            float glue_get_float(int index, int subindex);
+            void glue_set_float(int index, int subindex, float value_);
+            int glue_get_int(int index, int subindex);
             std::string glue_output_type(int index);
     };
 }

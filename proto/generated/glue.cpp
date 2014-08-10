@@ -7,41 +7,42 @@
 namespace Glue
 {
     template<>                                                                
-        float glue_getter<float>(Node *node, int index)
+        float glue_getter<float>(Node *node, int index, int subindex)
         {                                                                     
             Node_get_float *n = dynamic_cast<Node_get_float *>(node);   
-            return n->glue_get_float(index);
+            return n->glue_get_float(index, subindex);
         }                                       
 
     template<>                                                                
-        void glue_setter<float>(Node *node, int index, float value)   
+        void glue_setter<float>(Node *node, int index, int subindex, float value)   
         {                                                                     
-            Node_set_float *n = dynamic_cast<Node_set_float *>(node);   
-            n->glue_set_float(index, value);
+            Node_set_float *n = dynamic_cast<Node_set_float *>(node);
+            n->glue_set_float(index, subindex,value);
         }                                               
     
     template<>                                                                
-        int glue_getter<int>(Node *node, int index)
+        int glue_getter<int>(Node *node, int index, int subindex)
         {                                                                     
             Node_get_int *n = dynamic_cast<Node_get_int *>(node);   
-            return n->glue_get_int(index);
+            return n->glue_get_int(index, subindex);
         }                                                                     
 
     template<>                                                                
-        void glue_setter<int>(Node *node, int index, int value)   
+        void glue_setter<int>(Node *node, int index, int subindex, int value)   
         {                                                                     
             Node_set_int *n = dynamic_cast<Node_set_int *>(node);   
-            n->glue_set_int (index, value);
+            n->glue_set_int(index, subindex, value);
         }                                               
 
 
-    LinkBase *glue_link(std::string type, Node *from, int start, Node *to, int end)
+    LinkBase *glue_link(std::string type, Node *from, int from_index, int from_subindex,
+            Node *to, int to_index, int to_subindex)
     {
         if (type == "float" ) {                                   
-            return new Link<float>(from, start, to, end);
+            return new Link<float>(from, from_index, from_subindex, to, to_index, to_subindex);
         }
         if (type == "int") {
-            return new Link<int>(from, start, to, end);
+            return new Link<int>(from, from_index, from_subindex, to, to_index, to_subindex);
         }
 
         return NULL;

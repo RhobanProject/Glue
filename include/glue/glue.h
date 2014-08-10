@@ -16,17 +16,18 @@ namespace Glue
      * each supported type during the generation
      */
     template<typename T>
-    T glue_getter(Node *node, int index)
+    T glue_getter(Node *node, int index, int subindex)
     {}
     template<typename T>
-    void glue_setter(Node *node, int index, T value)
+    void glue_setter(Node *node, int index, int subindex, T value)
     {}
 
     /**
      * This have to be generated to instanciate the right link depending on which
      * type is used
      */
-    LinkBase *glue_link(std::string type, Node *from, int start, Node *to, int end);
+    LinkBase *glue_link(std::string type, Node *from, int from_index, int form_subindex, 
+            Node *to, int to_index, int to_subindex);
 
     /**
      * Conversion to get the index of an i/o name

@@ -13,7 +13,7 @@ namespace Glue
         public:
             void glue_import(Json::Value data);
             std::string glue_output_type(int index);
-            void glue_set_int(int index, int value);
+            void glue_set_int(int index, int subindex, int value);
     };
 }
 

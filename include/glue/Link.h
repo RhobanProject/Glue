@@ -16,21 +16,23 @@ namespace Glue
         class Link : public LinkBase
     {
         public:
-            Link(Node *from_, int start_, Node *to_, int end_)
-                : from(from_), start(start_), to(to_), end(end_)
+            Link(Node *from_, int from_index_, int from_subindex_, 
+                    Node *to_, int to_index_, int to_subindex_)
+                : from(from_), from_index(from_index_), from_subindex(from_subindex_),
+                   to(to_), to_index(to_index_), to_subindex(to_subindex_)
             {
             }
 
             void tick()
             {
-                T tmp = glue_getter<T>(from, start);
-                glue_setter<T>(to, end, tmp);
+                T tmp = glue_getter<T>(from, from_index, from_subindex);
+                glue_setter<T>(to, to_index, to_subindex, tmp);
             }
 
             Node *from;
-            int start;
+            int from_index, from_subindex;
             Node *to;
-            int end;
+            int to_index, to_subindex;
     };
 }
 

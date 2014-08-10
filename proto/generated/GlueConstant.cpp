@@ -25,7 +25,7 @@ namespace Glue
         return "";
     }
 
-    float GlueConstant::glue_get_float(int index) {
+    float GlueConstant::glue_get_float(int index, int subindex) {
         switch (index) {
             case INDEX_VALUE:
                 return value; 
@@ -35,7 +35,7 @@ namespace Glue
         return 0.0;
     }
 
-    void GlueConstant::glue_set_float(int index, float value_) {
+    void GlueConstant::glue_set_float(int index, int subindex, float value_) {
         switch (index) {
             case INDEX_VALUE:
                 value = value_;
@@ -43,11 +43,11 @@ namespace Glue
         }
     }
 
-    int GlueConstant::glue_get_int(int index)
+    int GlueConstant::glue_get_int(int index, int subindex)
     {
         switch (index) {
             case INDEX_VALUE:
-                return Glue::glue_convert_float_int(glue_get_float(index));
+                return Glue::glue_convert_float_int(glue_get_float(index, subindex));
                 break;
         }
 

@@ -19,7 +19,7 @@ int main()
     scene.add(node2);
 
     // Connects the constant to the printer
-    scene.connect(1, 1, "value", 2, "print");
+    scene.connect(1, 1, "value", 0, 2, "print", 0);
 
     // Tick
     scene.tick();

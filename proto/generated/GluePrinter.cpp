@@ -17,7 +17,7 @@ namespace Glue
         return "";
     }
 
-    void GluePrinter::glue_set_int(int index, int value)
+    void GluePrinter::glue_set_int(int index, int subindex, int value)
     {
         switch (index) {
             case INDEX_PRINT:

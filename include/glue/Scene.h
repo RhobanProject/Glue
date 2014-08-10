@@ -12,7 +12,8 @@ namespace Glue
     {
         public:
             void add(Node *node);
-            void connect(int linkId, int from_id, std::string start, int to_id, std::string end);
+            void connect(int linkId, int from_id, std::string start, int start_subindex,
+                    int to_id, std::string end, int end_subindex);
             void tick();
 
             std::map<int, Node*> nodes;
