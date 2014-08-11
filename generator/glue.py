@@ -26,6 +26,17 @@ class GlueAnnotation:
     @classmethod
     def get_params(cls, data):
         params = {}
+        # Fixing multi-lines comment
+        lines = data.split("\n")
+        fixed_lines = []
+        for line in lines:
+            line = line.strip()
+            if len(line) and line[0] == '*':
+                line = line[1:]
+            fixed_lines += [line.strip()]
+        data = ' '.join(fixed_lines)
+
+        # Parsing the data
         parts = data.split(';')
         for part in parts:
             if part.strip():
