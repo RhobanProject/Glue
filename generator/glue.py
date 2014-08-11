@@ -66,7 +66,7 @@ class GlueBlock:
             name = meta['name']
         self.name = name
         self.namespace = namespace
-        self.fields = []
+        self.fields = {}
         self.types = []
         self.meta = meta
 
@@ -84,10 +84,9 @@ class GlueBlock:
             name = annotation.params['name']
         if 'default' in annotation.params:
             default = annotation.params['default']
-        return GlueField(typeName, name, default)
-
-    def add_field(self, field):
-        self.fields += [field]
+        field = GlueField(typeName, name, default)
+        self.fields[name] = field
+        return field
 
     def add_input_method(self, method, annotation):
         if len(method['parameters']) != 1:
@@ -97,7 +96,6 @@ class GlueBlock:
         field = self.create_field(param['type'], method['name'], annotation)
         field.write = '%s(%s)' % (method['name'], '%s')
         field.attrs += ['input']
-        self.add_field(field)
 
     def add_output_method(self, method, annotation):
         if len(method['parameters']) != 0:
@@ -106,19 +104,30 @@ class GlueBlock:
         field = self.create_field(method['rtnType'], method['name'], annotation)
         field.read = '%s()' % method['name']
         field.attrs += ['output']
-        self.add_fields(field)
+    
+    def add_parameter_method(self, method, annotation):
+        if len(method['parameters']) != 1:
+            glue_error("Parameter method %s::%s() should have exactly one argument"
+                    % (self.name, method['name']))
+        param = method['parameters'][0]
+        field = self.create_field(param['type'], method['name'], annotation)
+        field.attrs += ['editable']
+        field.write = '%s(%s)' % (method['name'], '%s')
 
     def add_input_prop(self, prop, annotation):
         field = self.create_field(prop['type'], method['name'], annotation)
         field.write = '%s = %s' % (prop['name'], '%s')
         field.attrs += ['input']
-        self.add_field(field)
 
     def add_output_prop(self, prop, annotation):
         field = self.create_field(prop['type'], prop['name'], annotation)
         field.read = '%s' % prop['name']
         field.attrs += ['output']
-        self.add_field(field)
+
+    def add_parameter_prop(self, prop, annotation):
+        field = self.create_field(prop['type'], prop['name'], annotation)
+        field.attrs += ['editable']
+        field.write = '%s = %s' % (prop['name'], '%s')
 
     @classmethod
     def create(cls, annotation, data):
@@ -133,6 +142,8 @@ class GlueBlock:
                         block.add_input_method(method, annotation)
                     if annotation.name == 'Output':
                         block.add_output_method(method, annotation)
+                    if annotation.name == 'Parameter':
+                        block.add_parameter_method(method, annotation)
         
         for visible in data['properties']:
             for prop in data['properties'][visible]:
@@ -142,6 +153,8 @@ class GlueBlock:
                         block.add_input_prop(prop, annotation)
                     if annotation.name == 'Output':
                         block.add_output_prop(prop, annotation)
+                    if annotation.name == 'Parameter':
+                        block.add_parameter_prop(prop, annotation)
                
         return block
 
