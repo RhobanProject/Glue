@@ -55,8 +55,8 @@ macro(glue_run)
     set (GLUE_SOURCES
         ${GLUE_GENERATED_FILES}
         ${GLUE_ADDITIONAL}
-        "${GLUE}/Scene.cpp"
-        "${GLUE}/deserialize.cpp"
+        "${GLUE}/src/Scene.cpp"
+        "${GLUE}/src/deserialize.cpp"
     )
 
     add_library(glue ${GLUE_SOURCES})
