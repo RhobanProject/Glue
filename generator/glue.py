@@ -59,15 +59,19 @@ class GlueField:
             self.attrs += ['editable']
 
 class GlueBlock:
-    def __init__(self, family, name, namespace):
-        self.family = family
+    def __init__(self, meta, name, namespace):
+        if 'family' not in meta:
+            meta['family'] = 'core'
+        if 'name' in meta:
+            name = meta['name']
         self.name = name
         self.namespace = namespace
         self.fields = []
         self.types = []
+        self.meta = meta
 
     def id(self):
-        return '%s.%s' % (self.family, self.name)
+        return '%s.%s' % (self.meta['family'], self.name)
 
     def add_type(self, typeName):
         if typeName not in self.types:
@@ -117,9 +121,9 @@ class GlueBlock:
         self.add_field(field)
 
     @classmethod
-    def create(cls, family, data):
+    def create(cls, annotation, data):
         name = data['name']
-        block = GlueBlock(family, name, data['namespace'])
+        block = GlueBlock(annotation.params, name, data['namespace'])
         
         for visible in data['methods']:
             for method in data['methods'][visible]:
@@ -161,10 +165,7 @@ class Glue:
         annotations = GlueAnnotation.get_annotations(classInfo['doxygen'])
         for annotation in annotations:
             if annotation.name == 'Block':
-                family = 'core'
-                if 'family' in annotation.params:
-                    family = annotation.params['family']
-                self.add_block(GlueBlock.create(family, classInfo))
+                self.add_block(GlueBlock.create(annotation, classInfo))
 
     def generate_files(self, output_dir):
         open(output_dir+'/glue.cpp', 'w').write('')
