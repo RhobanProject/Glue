@@ -24,6 +24,8 @@ namespace Glue
             void loadFile(std::string data);
             void loadConnector(Json::Value connector, std::string *index, int *subindex);
 
+        protected:
+            std::string data;
             std::map<int, Node*> nodes;
             std::map<int, LinkBase*> links;
     };

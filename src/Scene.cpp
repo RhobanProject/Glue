@@ -30,6 +30,7 @@ namespace Glue
 
     void Scene::load(std::string content)
     {
+        data = content;
         Json::Value root;
         Json::Reader reader;
 
@@ -40,11 +41,19 @@ namespace Glue
             }
 
             for (unsigned int i=0; i<root["blocks"].size(); i++) {
-                loadBlock(root["blocks"][i]);
+                try {
+                    loadBlock(root["blocks"][i]);
+                } catch (std::string error) {
+                    std::cerr << "Error loading scene: " << error << std::endl;
+                }
             }
 
             for (unsigned int i=0; i<root["edges"].size(); i++) {
-                loadEdge(root["edges"][i]);
+                try {
+                    loadEdge(root["edges"][i]);
+                } catch (std::string error) {
+                    std::cerr << "Error loading scene: " << error << std::endl;
+                }
             }
         } else {
             std::ostringstream oss;
