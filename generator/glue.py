@@ -160,8 +160,29 @@ class GlueBlock:
 
 class Glue:
     def __init__(self):
+        self.compatibilities = {}
         self.blocks = {}
         self.types = []
+
+    def is_convertible(self, from_type, to_type):
+        if from_type in self.compatibilities:
+            return to_type in self.compatibilities[from_type]
+        else:
+            return False
+
+    def add_compatibility(self, from_type, to_type):
+        if from_type not in self.compatibilities:
+            self.compatibilities[from_type] = []
+        if to_type not in self.compatibilities[from_type]:
+            self.compatibilities[from_type] += [to_type]
+
+    def set_compatibilities(self, values):
+        pairs = values.split(',')
+        for pair in pairs:
+            parts = pair.split('/')
+            if len(parts)==2:
+                from_type, to_type = parts
+                self.add_compatibility(from_type, to_type)
 
     def parse(self, filename):
         header = headerParser.CppHeader(filename)

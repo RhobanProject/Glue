@@ -9,6 +9,17 @@ set(JSON_HEADERS "${GLUE}/json/include"
     CACHE STRING "Json headers")
 include_directories("${JSON_HEADERS}")
 
+# Compatibilities of types
+set(GLUE_COMPATIBILITIES "")
+
+macro(glue_is_convertible type1 type2)
+    if("${GLUE_COMPATIBILITIES}" STREQUAL "")
+        set(GLUE_COMPATIBILITIES "${type1}/${type2}")
+    else()
+        set(GLUE_COMPATIBILITIES "${GLUE_COMPATIBILITIES},${type1}/${type2}")
+    endif()
+endmacro()
+
 # Mongoose web support
 add_subdirectory("${GLUE}/mongoose/" mongoose)
 
@@ -21,8 +32,8 @@ set(GLUE_GENERATOR "${GLUE}/generator/generator.py")
 
 # Append files to be parsed
 set(GLUE_FILES "" CACHE STRING "Glue files")
-set(GLUE_ADDITIONAL "" CACHE STRING "Glue additional files")
-set(GLUE_GENERATED_FILES "" CACHE STRING "Glue generating files")
+set(GLUE_ADDITIONAL)
+set(GLUE_GENERATED_FILES)
 
 macro(glue_parse_absolute file)
     get_filename_component(component ${file} NAME_WE)
@@ -49,7 +60,7 @@ macro(glue_run)
 
     add_custom_command(
         OUTPUT ${GLUE_GENERATED_FILES}
-        COMMAND "${GLUE_GENERATOR}" "${GLUE_OUTPUT_DIR}" ${GLUE_FILES}
+        COMMAND "${GLUE_GENERATOR}" "${GLUE_OUTPUT_DIR}" "${GLUE_COMPATIBILITIES}" ${GLUE_FILES}
         DEPENDS ${GLUE_FILES}
     )
 

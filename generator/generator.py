@@ -22,8 +22,12 @@ output_dir = sys.argv[1]
 if not os.path.isdir(output_dir):
     os.makedirs(output_dir)
 
+# Type compatibilities
+compatibilities = sys.argv[2]
+glue.set_compatibilities(compatibilities)
+
 # Parse the headers
-files = sys.argv[2:]
+files = sys.argv[3:]
 for headerFile in files:
     glue.parse(headerFile)
 

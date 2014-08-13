@@ -19,6 +19,7 @@ glue_add(convert.cpp)
 glue_add(generated/GlueConstant.cpp)
 glue_add(generated/GluePrinter.cpp)
 glue_add(generated/glue.cpp)
+glue_is_convertible(float int)
 
 glue_run()
 add_executable(proto ${ALL_SOURCES})
