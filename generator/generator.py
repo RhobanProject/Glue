@@ -7,7 +7,7 @@ from glue import Glue
 #
 # - glue.cpp: glue functions
 #       glue_getter, glue_setter, glue_link, glue_name_to_index,
-#       glue_instanciate
+#       glue_instanciate, glue_is_convertible
 # - deserialize.h, convert.h: headers for methods that converts and
 #   deserializes compatible types
 # - GlueTypes.h: all type classes (Node_get_* and Node_set_*), with

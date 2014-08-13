@@ -17,13 +17,20 @@ namespace Glue
         Node *to = nodes[to_id];
         int from_index = glue_name_to_index(start);
         int to_index = glue_name_to_index(end);
-        std::string type = to->glue_input_type(to_index);
+        std::string from_type = from->glue_output_type(from_index);
+        std::string to_type = to->glue_input_type(to_index);
 
-        if (type == "") {
-            throw std::string("Can't create a link because it does not exists as input");
+        if (from_type == "" || to_type == "") {
+            throw std::string("Can't create an edge, I/O may not exist");
         }
 
-        LinkBase *link = glue_link(type, from, from_index, from_subindex, to, to_index, to_subindex);
+        if (!glue_is_convertible(from_type, to_type)) {
+            std::ostringstream oss;
+            oss << "Type " << from_type << " can't be converted to " << to_type;
+            throw oss.str();
+        }
+
+        LinkBase *link = glue_link(to_type, from, from_index, from_subindex, to, to_index, to_subindex);
         link->id = linkId;
         links[linkId] = link;
     }

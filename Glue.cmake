@@ -35,6 +35,7 @@ macro(glue_parse file)
     glue_parse_absolute("${CMAKE_SOURCE_DIR}/${file}")
 endmacro()
 
+# Add file to the build on "glue" side
 macro(glue_add file)
     set(GLUE_ADDITIONAL ${GLUE_ADDITIONAL} ${file})
 endmacro()

@@ -38,6 +38,12 @@ namespace Glue
      * Creates an instance of a given type with given data for its nodes
      */
     Node *glue_instanciate(std::string type, Json::Value data);
+    
+    /**
+     * Tell if type from can be convert to type to
+     * In this case, glue_convert_[from]_to_[to]() should also exist
+     */
+    bool glue_is_convertible(std::string from, std::string to);
 }
 
 #endif

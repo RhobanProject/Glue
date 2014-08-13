@@ -75,4 +75,17 @@ namespace Glue
 
         return node;
     }
+
+    bool glue_is_convertible(std::string from, std::string to)
+    {
+        if (from == to) {
+            return true;
+        }
+
+        if (from == "float" && to == "int") {
+            return true;
+        }
+
+        return false;
+    }
 }

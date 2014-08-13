@@ -4,7 +4,10 @@
 namespace Pouet
 {
 /**
- * Glue:Block(family=core)
+ * Glue:Block(family=core; size=small; description=
+ * A simple constant,
+ * this will output the value
+ * )
  */
 class Constant
 {
@@ -18,6 +21,11 @@ class Constant
          * Glue:Output()
          */
         float *x;
+
+        /**
+         * Glue:Parameter()
+         */
+        int test;
 };
 }
 
