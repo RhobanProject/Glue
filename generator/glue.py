@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 
-import re
+import re, sys, os, codecs
+from jinja2 import Template, FileSystemLoader, Environment
 from CppHeaderParser import CppHeaderParser3 as headerParser
+
+def glue_type_escape(typename):
+    return typename.replace('*', 'star').replace(' ', '_')
 
 def glue_error(message):
     print("Glue fatal error: %s\n" % message)
@@ -69,9 +73,10 @@ class GlueBlock:
         self.fields = {}
         self.types = []
         self.meta = meta
+        self.family = self.meta['family']
 
     def id(self):
-        return '%s.%s' % (self.meta['family'], self.name)
+        return '%s.%s' % (self.family, self.name)
 
     def add_type(self, typeName):
         if typeName not in self.types:
@@ -163,6 +168,13 @@ class Glue:
         self.compatibilities = {}
         self.blocks = {}
         self.types = []
+        self.parsed = []
+        self.fields = []
+        
+        templates_dir = os.path.join(os.path.dirname(__file__), 'templates')
+        loader = FileSystemLoader(templates_dir)
+        self.env = Environment(loader=loader)
+        self.env.filters['te'] = glue_type_escape
 
     def is_convertible(self, from_type, to_type):
         if from_type in self.compatibilities:
@@ -185,6 +197,7 @@ class Glue:
                 self.add_compatibility(from_type, to_type)
 
     def parse(self, filename):
+        self.parsed += [filename]
         header = headerParser.CppHeader(filename)
         for cppClass in header.classes:
             self.parse_class(header.classes[cppClass])
@@ -194,6 +207,9 @@ class Glue:
         for typeName in block.types:
             if typeName not in self.types:
                 self.types += [typeName]
+        for field in block.fields:
+            if field not in self.fields:
+                self.fields += [field]
 
     def parse_class(self, classInfo):
         annotations = GlueAnnotation.get_annotations(classInfo['doxygen'])
@@ -201,5 +217,27 @@ class Glue:
             if annotation.name == 'Block':
                 self.add_block(GlueBlock.create(annotation, classInfo))
 
+    def render(self, filename, variables={}):
+        template = self.env.get_template(filename)
+        variables['glue'] = self
+        data = template.render(**variables)
+
+        # Avoid rendering if the file already exist and has
+        # the same contents
+        filename = os.path.join(self.output_dir, filename)
+        try:
+            f = codecs.open(filename, 'r', 'utf-8')
+            if data == f.read():
+                return
+        except:
+            pass
+
+        outFile = codecs.open(filename, 'w', 'utf-8')
+        outFile.write(data)
+        outFile.close()
+
     def generate_files(self, output_dir):
-        open(output_dir+'/glue.cpp', 'w').write('')
+        self.output_dir = output_dir
+        self.render('glue.cpp')
+        self.render('convert.h')
+        self.render('GlueTypes.h')
