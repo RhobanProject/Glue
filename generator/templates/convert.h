@@ -1,3 +1,5 @@
+#ifndef _GLUE_CONVERT_H
+#define _GLUE_CONVERT_H
 #include <string>
 #include <cstdlib>
 {% include "headers.cpp" %}
@@ -10,3 +12,4 @@ namespace Glue
     {% endfor %}
     {% endfor %}
 }
+#endif

@@ -52,28 +52,65 @@ class GlueAnnotation:
         return params
 
 class GlueField:
-    def __init__(self, typeName, name, default):
-        self.typeName = typeName
+    def __init__(self, typeName, name):
+        self.type = typeName
         self.name = name
-        self.default = default
+        self.default = None
         self.read = ''
+        self.read_sub = ''
         self.write = ''
+        self.write_sub = ''
         self.attrs = []
-        if default:
-            self.attrs += ['editable']
+        self.multiple = False
+
+    def set_default(self, default):
+        self.default = default
+        self.attrs += ['editable']
+
+    def is_input(self):
+        return ('input' in self.attrs)
+
+    def is_output(self):
+        return ('output' in self.attrs)
+
+    def is_editable(self):
+        return ('editable' in self.attrs)
+
+    def get(self):
+        return self.read
+
+    def get_sub(self, sub):
+        if self.multiple:
+            return self.read_sub % sub
+        else:
+            return self.read
+
+    def set(self, value):
+        return self.write % (value)
+
+    def set_sub(self, value, sub):
+        if self.multiple:
+            return self.write_sub % (sub, value)
+        else:
+            return self.write % value
 
 class GlueBlock:
     def __init__(self, meta, name, namespace):
+        self.classname = name
+        self.fullclass = name
         if 'family' not in meta:
             meta['family'] = 'core'
         if 'name' in meta:
             name = meta['name']
         self.name = name
         self.namespace = namespace
+        if namespace:
+            self.fullclass = namespace+'::'+self.fullclass
         self.fields = {}
         self.types = []
         self.meta = meta
         self.family = self.meta['family']
+        self.file = ''
 
     def id(self):
         return '%s.%s' % (self.family, self.name)
@@ -83,31 +120,54 @@ class GlueBlock:
             self.types += [typeName]
 
     def create_field(self, typeName, name, annotation):
-        self.add_type(typeName)
-        default = None
-        if 'name' in annotation.params:
-            name = annotation.params['name']
+        if name in self.fields:
+            field = self.fields[name]
+        else:
+            self.add_type(typeName)
+            default = None
+            if 'name' in annotation.params:
+                name = annotation.params['name']
+            field = GlueField(typeName, name)
+            self.fields[name] = field
+        
         if 'default' in annotation.params:
-            default = annotation.params['default']
-        field = GlueField(typeName, name, default)
-        self.fields[name] = field
+            field.set_default(annotation.params['default'])
+
         return field
 
     def add_input_method(self, method, annotation):
-        if len(method['parameters']) != 1:
-            glue_error("Input method %s::%s() should have exactly one argument"
+        multiple = False
+        if len(method['parameters']) == 0 or len(method['parameters'])>2:
+            glue_error("Input method %s::%s() should have one or two arguments"
                     % (self.name, method['name']))
-        param = method['parameters'][0]
+        if len(method['parameters'])==1:
+            param = method['parameters'][0]
+        if len(method['parameters'])==2:
+            if method['parameters'][0]['type'] != 'int':
+                glue_error('Input method %s::%s() is multiple, first argument should be int'
+                    % (self.name, method['name']))
+            param = method['parameters'][1]
+            multiple = True
         field = self.create_field(param['type'], method['name'], annotation)
+        field.multiple = multiple
         field.write = '%s(%s)' % (method['name'], '%s')
+        field.write_sub = '%s(%s, %s)' % (method['name'], '%s', '%s')
         field.attrs += ['input']
 
     def add_output_method(self, method, annotation):
-        if len(method['parameters']) != 0:
+        multiple = False
+        if len(method['parameters']) == 0 or len(method['parameters']) > 1:
             glue_error("Output method %s::%s() should not take any argument"
                     % (self.name, method['name']))
+        if len(method['parameters'])==1:
+            if method['parameters'][0]['type'] != 'int':
+                glue_error("Output method %s::%s() is multiple, its argument should be int"
+                        % (self.name, method['name']))
+            multiple = True
         field = self.create_field(method['rtnType'], method['name'], annotation)
+        field.multiple = True
         field.read = '%s()' % method['name']
+        field.read_sub = '%s(%s)' % (method['name'], '%s')
         field.attrs += ['output']
     
     def add_parameter_method(self, method, annotation):
@@ -120,13 +180,31 @@ class GlueBlock:
         field.write = '%s(%s)' % (method['name'], '%s')
 
     def add_input_prop(self, prop, annotation):
-        field = self.create_field(prop['type'], method['name'], annotation)
+        multiple = False
+        typeName = prop['type']
+        if typeName.startswith('std::vector<'):
+            typeName = typeName[12:-1]
+            multiple = True
+        field = self.create_field(typeName, prop['name'], annotation)
+        field.multiple = multiple
+        field.read = '%s' % prop['name']
         field.write = '%s = %s' % (prop['name'], '%s')
+        field.read_sub = '%s[%s]' % (prop['name'], '%s')
+        field.write_sub = '%s[%s] = %s' % (prop['name'], '%s', '%s')
         field.attrs += ['input']
 
     def add_output_prop(self, prop, annotation):
-        field = self.create_field(prop['type'], prop['name'], annotation)
+        multiple = False
+        typeName = prop['type']
+        if typeName.startswith('std::vector<'):
+            typeName = typeName[12:-1]
+            multiple = True
+        field = self.create_field(typeName, prop['name'], annotation)
+        field.multiple = multiple
         field.read = '%s' % prop['name']
+        field.write = '%s = %s' % (prop['name'], '%s')
+        field.read_sub = '%s[%s]' % (prop['name'], '%s')
+        field.write_sub = '%s[%s] = %s' % (prop['name'], '%s', '%s')
         field.attrs += ['output']
 
     def add_parameter_prop(self, prop, annotation):
@@ -170,6 +248,7 @@ class Glue:
         self.types = []
         self.parsed = []
         self.fields = []
+        self.deserialize = []
         
         templates_dir = os.path.join(os.path.dirname(__file__), 'templates')
         loader = FileSystemLoader(templates_dir)
@@ -197,12 +276,14 @@ class Glue:
                 self.add_compatibility(from_type, to_type)
 
     def parse(self, filename):
+        self.parsing = filename
         self.parsed += [filename]
         header = headerParser.CppHeader(filename)
         for cppClass in header.classes:
             self.parse_class(header.classes[cppClass])
                 
     def add_block(self, block):
+        block.file = self.parsing
         self.blocks[block.id()] = block
         for typeName in block.types:
             if typeName not in self.types:
@@ -210,6 +291,10 @@ class Glue:
         for field in block.fields:
             if field not in self.fields:
                 self.fields += [field]
+        for field in block.fields.values():
+            if field.is_editable():
+                if field.type not in self.deserialize:
+                    self.deserialize += [field.type]
 
     def parse_class(self, classInfo):
         annotations = GlueAnnotation.get_annotations(classInfo['doxygen'])
@@ -217,8 +302,10 @@ class Glue:
             if annotation.name == 'Block':
                 self.add_block(GlueBlock.create(annotation, classInfo))
 
-    def render(self, filename, variables={}):
-        template = self.env.get_template(filename)
+    def render(self, tplname, filename=None, variables={}):
+        if filename == None:
+            filename = tplname
+        template = self.env.get_template(tplname)
         variables['glue'] = self
         data = template.render(**variables)
 
@@ -238,6 +325,11 @@ class Glue:
 
     def generate_files(self, output_dir):
         self.output_dir = output_dir
-        self.render('glue.cpp')
         self.render('convert.h')
+        self.render('deserialize.h')
+        self.render('glue.cpp')
         self.render('GlueTypes.h')
+        for name, block in self.blocks.items():
+            self.render('Block.h', 'Glue'+block.name+'.h', {'block': block})
+            self.render('Block.cpp', 'Glue'+block.name+'.cpp', {'block': block})
+

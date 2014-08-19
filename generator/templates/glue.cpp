@@ -42,11 +42,11 @@ namespace Glue
         return -1;
     }
 
-    Node *glue_instanciate(std::string family, std::string type, Json::Value data)
+    Node *glue_instanciate(std::string type, Json::Value data)
     {
         Node *node = NULL;
         {% for block in glue.blocks.values() %}
-        if (family == "{{ block.family }}" && type == "{{ block.name }}") {
+        if (type == "{{ block.name }}") {
             node = new Glue{{ block.name }};
         }
         {% endfor %}

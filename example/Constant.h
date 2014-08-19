@@ -1,6 +1,8 @@
 #ifndef _CONSTANT_H
 #define _CONSTANT_H
 
+#include <vector>
+
 namespace Pouet
 {
 /**
@@ -20,12 +22,7 @@ class Constant
         /**
          * Glue:Output()
          */
-        float *x;
-
-        /**
-         * Glue:Parameter()
-         */
-        int test;
+        int data(int index);
 };
 }
 
