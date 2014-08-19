@@ -77,12 +77,15 @@ namespace Glue
         if (!block.isMember("type") || !block["type"].isString()) {
             throw std::string("Block without a type");
         }
+        std::string type = block["type"].asString();
+
         if (!block.isMember("values") || !block["values"].isObject()) {
-            throw std::string("Block without values");
+            std::ostringstream oss;
+            oss << "Block " << type << " without values";
+            throw oss.str();
         }
 
         int id = block["id"].asInt();
-        std::string type = block["type"].asString();
         Json::Value values = block["values"];
 
         Node *node = glue_instanciate(type, values);

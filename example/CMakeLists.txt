@@ -17,7 +17,9 @@ glue_is_convertible(float int)
 # Building library
 set(ALL_SOURCES
     Printer.cpp
+    main.cpp
     )
 
-add_library(Example ${ALL_SOURCES})
-glue_run(Example)
+glue_run()
+add_executable(Example ${ALL_SOURCES})
+target_link_libraries(Example glue)

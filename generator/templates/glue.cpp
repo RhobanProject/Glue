@@ -1,5 +1,11 @@
+#include <glue/Node.h>
+#include <glue/Link.h>
 #include <glue/glue.h>
+#include "GlueTypes.h"
 {% include "headers.cpp" %}
+{% for block in glue.blocks.values() %}
+#include "Glue{{ block.name }}.h"
+{% endfor %}
 
 namespace Glue
 {

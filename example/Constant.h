@@ -18,11 +18,6 @@ class Constant
          * Glue:Output(default=0.0)
          */
         float value;
-
-        /**
-         * Glue:Output()
-         */
-        int data(int index);
 };
 }
 
