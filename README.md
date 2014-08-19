@@ -5,7 +5,7 @@
 To use Glue, you should set `GLUE` to the directory of Glue and then include
 the `Glue.cmake` file:
 
-```
+```cmake
 set(GLUE "/path/to/glue" 
     CACHE STRING "Glue directory")
 
@@ -14,14 +14,14 @@ include("${GLUE}/Glue.cmake")
 
 Then, call `glue_parse()` on all headers you want to get annotations:
 
-```
+```cmake
 # Adds MyClass to the header parsing process
 glue_parse("MyClass.h")
 ```
 
 You can tell that a type is compatible with another with `glue_is_convertible()`:
 
-```
+```cmake
 # Tells that a float can be converted to an int
 glue_is_convertible(float int)
 ```
@@ -53,7 +53,7 @@ be applied to:
 
 For instance:
 
-```
+```c++
     /***
      * Glue:Input()
      */
@@ -62,7 +62,7 @@ For instance:
 
 Will result in a block with just an input "value", when:
 
-```
+```c++
     /***
      * Glue:Input()
      */
