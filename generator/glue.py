@@ -62,6 +62,14 @@ class GlueField:
         self.write_sub = ''
         self.attrs = []
         self.multiple = False
+        self.convertible = []
+
+    def add_convertible(self, convertible):
+        if convertible not in self.convertible:
+            self.convertible += [convertible]
+
+    def is_convertible_to(self, to):
+        return (to in self.convertible)
 
     def set_default(self, default):
         self.default = default
@@ -323,7 +331,16 @@ class Glue:
         outFile.write(data)
         outFile.close()
 
+    def apply_compatibilities(self):
+        for block in self.blocks.values():
+            for field in block.fields.values():
+                if field.type in self.compatibilities:
+                    for to_type in self.compatibilities[field.type]:
+                        field.add_convertible(to_type)
+                        block.add_type(to_type)
+
     def generate_files(self, output_dir):
+        self.apply_compatibilities()
         self.output_dir = output_dir
         self.render('convert.h')
         self.render('deserialize.h')

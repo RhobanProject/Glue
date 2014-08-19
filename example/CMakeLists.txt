@@ -16,8 +16,9 @@ glue_is_convertible(float int)
 
 # Building library
 set(ALL_SOURCES
-    Printer.cpp
+    convert.cpp
     main.cpp
+    Printer.cpp
     )
 
 glue_run()

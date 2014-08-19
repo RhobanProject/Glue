@@ -63,6 +63,11 @@ namespace Glue
                 return {{ field.get_sub("subindex") }};
             break;
             {% endif %}
+            {% if field.is_output() and field.is_convertible_to(type) %}
+            case INDEX_{{ field.name|upper }}:
+                return Glue::glue_convert_{{ field.type }}_{{ type }}({{ field.get_sub("subindex") }});
+            break;
+            {% endif %}
             {% endfor %}
         }
     }
