@@ -10,7 +10,7 @@ namespace Glue
             value = data.asFloat();
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -20,7 +20,7 @@ namespace Glue
             value = data.asInt();
             return true;
         } else {
-            return true;
+            return false;
         }
     } 
 
@@ -30,7 +30,7 @@ namespace Glue
             value = data.asBool();
             return true;
         } else {
-            return true;
+            return false;
         }
     } 
 
@@ -40,7 +40,7 @@ namespace Glue
             value = data.asString();
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 }

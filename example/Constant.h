@@ -1,6 +1,7 @@
 #ifndef _CONSTANT_H
 #define _CONSTANT_H
 
+#include <string>
 #include <vector>
 
 namespace Pouet
@@ -15,9 +16,9 @@ class Constant
 {
     public:
         /**
-         * Glue:Output(default=0.0)
+         * Glue:Output(default=12)
          */
-        float value;
+        int value;
 };
 }
 

@@ -1,7 +1,7 @@
 #include <cstdio>
 #include "Printer.h"
 
-void Printer::print(int value)
+void Printer::print(std::string value)
 {
-    printf("Printer: %d\n", value);
+    printf("Printer: %s\n", value.c_str());
 }

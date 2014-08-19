@@ -13,6 +13,7 @@ include("${GLUE}/Glue.cmake")
 glue_parse(Printer.h)
 glue_parse(Constant.h)
 glue_is_convertible(float int)
+glue_is_convertible(int "std::string")
 
 # Building library
 set(ALL_SOURCES

@@ -5,7 +5,9 @@ from jinja2 import Template, FileSystemLoader, Environment
 from CppHeaderParser import CppHeaderParser3 as headerParser
 
 def glue_type_escape(typename):
-    return typename.replace('*', 'star').replace(' ', '_')
+    if typename=='std::string':
+        return 'string'
+    return typename.replace('*', 'star').replace(' ', '_').replace('::', '__')
 
 def glue_error(message):
     print("Glue fatal error: %s\n" % message)

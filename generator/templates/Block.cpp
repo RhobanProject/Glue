@@ -11,14 +11,20 @@ namespace Glue
         {% for field in block.fields.values() %}{% if field.is_editable() %}
         if (data.isMember("{{ field.name }}")) {
             {{ field.type }} _glue_tmp;
-            if (!glue_deserialize_{{ field.type|te }}(data["{{ field.name }}"], _glue_tmp)) {
+            if (glue_deserialize_{{ field.type|te }}(data["{{ field.name }}"], _glue_tmp)) {
+                {{ field.set("_glue_tmp") }};
+            } else {
                 {% if field.default %}
-                if (glue_deserialize_{{ field.type|te }}("{{ field.default }}", _glue_tmp)) {
-                    {{ field.set("_glue_tmp") }};
+                std::string _glue_json = "{{ field.default }}";
+                Json::Reader _glue_reader;
+                Json::Value _glue_value;
+
+                if (_glue_reader.parse(_glue_json, _glue_value)) {
+                    if (glue_deserialize_{{ field.type|te }}(_glue_value, _glue_tmp)) {
+                        {{ field.set("_glue_tmp") }};
+                    }
                 }
                 {% endif %}
-            } else {
-                {{ field.set("_glue_tmp") }};
             }
         }
         {% endif %}{% endfor %}
@@ -65,7 +71,7 @@ namespace Glue
             {% endif %}
             {% if field.is_output() and field.is_convertible_to(type) %}
             case INDEX_{{ field.name|upper }}:
-                return Glue::glue_convert_{{ field.type }}_{{ type }}({{ field.get_sub("subindex") }});
+                return Glue::glue_convert_{{ field.type|te }}_{{ type|te }}({{ field.get_sub("subindex") }});
             break;
             {% endif %}
             {% endfor %}
