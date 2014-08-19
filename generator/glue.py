@@ -166,8 +166,8 @@ class GlueBlock:
 
     def add_output_method(self, method, annotation):
         multiple = False
-        if len(method['parameters']) == 0 or len(method['parameters']) > 1:
-            glue_error("Output method %s::%s() should not take any argument"
+        if len(method['parameters']) > 1:
+            glue_error("Output method %s::%s() should take 0 or 1 argument"
                     % (self.name, method['name']))
         if len(method['parameters'])==1:
             if method['parameters'][0]['type'] != 'int':
@@ -175,7 +175,7 @@ class GlueBlock:
                         % (self.name, method['name']))
             multiple = True
         field = self.create_field(method['rtnType'], method['name'], annotation)
-        field.multiple = True
+        field.multiple = multiple
         field.read = '%s()' % method['name']
         field.read_sub = '%s(%s)' % (method['name'], '%s')
         field.attrs += ['output']

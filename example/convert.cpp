@@ -13,4 +13,11 @@ namespace Glue
         oss << value;
         return oss.str();
     }
+
+    std::string glue_convert_float_string(float value)
+    {
+        std::ostringstream oss;
+        oss << value;
+        return oss.str();
+    }
 }

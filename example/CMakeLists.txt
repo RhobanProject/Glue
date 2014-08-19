@@ -10,17 +10,19 @@ set(GLUE "${CMAKE_SOURCE_DIR}/../"
 include("${GLUE}/Glue.cmake")
 
 # Registering Glue classes
+glue_parse(Gain.h)
 glue_parse(Printer.h)
 glue_parse(Constant.h)
-glue_parse(A.h)
 glue_is_convertible(float int)
 glue_is_convertible(int "std::string")
+glue_is_convertible(float "std::string")
 
 # Building library
 set(ALL_SOURCES
     convert.cpp
     main.cpp
     Printer.cpp
+    Gain.cpp
     )
 
 glue_run()

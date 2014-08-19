@@ -18,7 +18,7 @@ class Constant
         /**
          * Glue:Output(default=12)
          */
-        int value;
+        float value;
 };
 }
 

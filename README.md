@@ -31,6 +31,35 @@ be included in the generated files.
 
 ## Annotations
 
+Glue uses annotations for reading meta data, here is an example:
+
+```c++
+/**
+ * Glue:Block(description=Output is gain*input)
+ */
+class Gain
+{
+    public:
+        /**
+         * Glue:Input()
+         */
+         float value;
+
+        /**
+         * Glue:Parameter(default=1.0)
+         */
+         float gain;
+
+        /**
+         * Glue:Output()
+         */
+         float output() {
+            return gain*value;
+         }
+         
+}
+```
+
 ### Glue:Block
 
 This annotation tells that a class is a node, parameters are:
