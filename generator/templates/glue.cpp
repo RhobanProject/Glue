@@ -3,8 +3,9 @@
 #include <glue/glue.h>
 #include "GlueTypes.h"
 {% include "headers.cpp" %}
-{% for block in glue.blocks.values() %}
-#include "Glue{{ block.name }}.h"
+{% include "parsed.cpp" %}
+{% for file in glue.files %}
+#include "Glue{{ file }}.h"
 {% endfor %}
 
 namespace Glue

@@ -9,7 +9,6 @@ namespace Glue
 
     std::string glue_convert_int_string(int value)
     {
-        printf("Converting %d to string...\n", value);
         std::ostringstream oss;
         oss << value;
         return oss.str();

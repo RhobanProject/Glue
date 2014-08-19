@@ -2,6 +2,7 @@
 #define _GLUE_TYPES_H
 
 #include <glue/glue.h>
+{% include "headers.cpp" %}
 
 namespace Glue
 {

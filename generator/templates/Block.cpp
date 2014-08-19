@@ -1,11 +1,13 @@
+#include <sstream>
 #include <iostream>
 #include <glue/glue.h>
 #include "deserialize.h"
 #include "convert.h"
-#include "Glue{{ block.name }}.h"
+#include "Glue{{ file }}.h"
 
 namespace Glue
 {
+{% for block in blocks %}
     void Glue{{ block.name }}::glue_import(Json::Value data)
     {
         {% for field in block.fields.values() %}{% if field.is_editable() %}
@@ -76,6 +78,10 @@ namespace Glue
             {% endif %}
             {% endfor %}
         }
+
+        std::ostringstream oss;
+        oss << "Unknown index " << index << " for block {{ block.name }}";
+        throw oss.str();
     }
 
     void Glue{{ block.name }}::glue_set_{{ type|te }}(int index, int subindex, {{ type }} _glue_value) {
@@ -89,5 +95,6 @@ namespace Glue
             {% endfor %}
         }
     }
+{% endfor %}
 {% endfor %}
 }

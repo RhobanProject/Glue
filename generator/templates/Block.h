@@ -1,12 +1,14 @@
-#ifndef _GLUE_{{ block.name }}_H
-#define _GLUE_{{ block.name }}_H
-
 #include <vector>
 #include <map>
 #include <set>
 #include <string>
 #include <glue/Node.h>
 #include "GlueTypes.h"
+
+{% for block in blocks %}
+#ifndef _GLUE_{{ block.name }}_H
+#define _GLUE_{{ block.name }}_H
+
 #include "{{ block.file }}"
 
 namespace Glue
@@ -30,3 +32,4 @@ namespace Glue
 }
 
 #endif
+{% endfor %}

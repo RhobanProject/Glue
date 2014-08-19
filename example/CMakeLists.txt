@@ -12,6 +12,7 @@ include("${GLUE}/Glue.cmake")
 # Registering Glue classes
 glue_parse(Printer.h)
 glue_parse(Constant.h)
+glue_parse(A.h)
 glue_is_convertible(float int)
 glue_is_convertible(int "std::string")
 

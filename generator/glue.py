@@ -258,7 +258,9 @@ class Glue:
         self.types = []
         self.parsed = []
         self.fields = []
+        self.files = {}
         self.deserialize = []
+        self.headers = []
         
         templates_dir = os.path.join(os.path.dirname(__file__), 'templates')
         loader = FileSystemLoader(templates_dir)
@@ -272,6 +274,8 @@ class Glue:
             return False
 
     def add_compatibility(self, from_type, to_type):
+        self.add_type(from_type)
+        self.add_type(to_type)
         if from_type not in self.compatibilities:
             self.compatibilities[from_type] = []
         if to_type not in self.compatibilities[from_type]:
@@ -287,17 +291,23 @@ class Glue:
 
     def parse(self, filename):
         self.parsing = filename
+        self.current_file = os.path.basename(filename).split('.',2)[0]
+        self.files[self.current_file] = []
         self.parsed += [filename]
         header = headerParser.CppHeader(filename)
         for cppClass in header.classes:
             self.parse_class(header.classes[cppClass])
+
+    def add_type(self, typeName):
+        if typeName not in self.types:
+            self.types += [typeName]
                 
     def add_block(self, block):
         block.file = self.parsing
         self.blocks[block.id()] = block
+        self.files[self.current_file] += [block]
         for typeName in block.types:
-            if typeName not in self.types:
-                self.types += [typeName]
+            self.add_type(typeName)
         for field in block.fields:
             if field not in self.fields:
                 self.fields += [field]
@@ -348,7 +358,7 @@ class Glue:
         self.render('deserialize.h')
         self.render('glue.cpp')
         self.render('GlueTypes.h')
-        for name, block in self.blocks.items():
-            self.render('Block.h', 'Glue'+block.name+'.h', {'block': block})
-            self.render('Block.cpp', 'Glue'+block.name+'.cpp', {'block': block})
+        for name, blocks in self.files.items():
+            self.render('Block.h', 'Glue'+name+'.h', {'file': name, 'blocks': blocks})
+            self.render('Block.cpp', 'Glue'+name+'.cpp', {'file': name, 'blocks': blocks})
 

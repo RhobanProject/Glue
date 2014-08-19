@@ -24,10 +24,16 @@ if not os.path.isdir(output_dir):
 
 # Type compatibilities
 compatibilities = sys.argv[2]
-glue.set_compatibilities(compatibilities)
+if compatibilities != ' ':
+    glue.set_compatibilities(compatibilities)
+
+# Additional headers
+headers = sys.argv[3]
+if headers != ' ':
+    glue.headers = headers.split(',')
 
 # Parse the headers
-files = sys.argv[3:]
+files = sys.argv[4:]
 for headerFile in files:
     glue.parse(headerFile)
 
