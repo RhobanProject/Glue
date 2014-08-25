@@ -19,6 +19,11 @@ namespace Glue
              */
             virtual std::string glue_input_type(int index)=0;
             virtual std::string glue_output_type(int index)=0;
+
+            /**
+             * Called when a link is created
+             */
+            virtual void glue_prepare(int index, int subindex)=0;
             
             /**
              * Node identifier

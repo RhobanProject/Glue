@@ -11,6 +11,7 @@ include("${GLUE}/Glue.cmake")
 
 # Registering Glue classes
 glue_parse(Gain.h)
+glue_parse(Add.h)
 glue_parse(Printer.h)
 glue_parse(Constant.h)
 glue_is_convertible(float int)
@@ -23,6 +24,7 @@ set(ALL_SOURCES
     main.cpp
     Printer.cpp
     Gain.cpp
+    Add.cpp
     )
 
 glue_run()

@@ -62,9 +62,16 @@ class GlueField:
         self.read_sub = ''
         self.write = ''
         self.write_sub = ''
+        self.prepare = ''
         self.attrs = []
         self.multiple = False
         self.convertible = []
+
+    def get_prepare(self, subindex):
+        if self.prepare:
+            return self.prepare % subindex
+        else:
+            return ''
 
     def add_convertible(self, convertible):
         if convertible not in self.convertible:
@@ -191,13 +198,20 @@ class GlueBlock:
 
     def add_input_prop(self, prop, annotation):
         multiple = False
+        prepare = ''
         typeName = prop['type']
+        if typeName.startswith('std::map<'):
+            typeName = typeName[9:-1]
+            multiple = True
         if typeName.startswith('std::vector<'):
+            prepare = '%s.resize(%s+1)' % (prop['name'], '%s')
             typeName = typeName[12:-1]
             multiple = True
         field = self.create_field(typeName, prop['name'], annotation)
         field.multiple = multiple
         field.read = '%s' % prop['name']
+        if prepare:
+            field.prepare = prepare
         field.write = '%s = %s' % (prop['name'], '%s')
         field.read_sub = '%s[%s]' % (prop['name'], '%s')
         field.write_sub = '%s[%s] = %s' % (prop['name'], '%s', '%s')
@@ -206,11 +220,18 @@ class GlueBlock:
     def add_output_prop(self, prop, annotation):
         multiple = False
         typeName = prop['type']
+        prepare = ''
+        if typeName.startswith('std::map<'):
+            typeName = typeName[9:-1]
+            multiple = True
         if typeName.startswith('std::vector<'):
+            prepare = '%s.resize(%s+1)' % (prop['name'], '%s')
             typeName = typeName[12:-1]
             multiple = True
         field = self.create_field(typeName, prop['name'], annotation)
         field.multiple = multiple
+        if prepare:
+            field.prepare = prepare
         field.read = '%s' % prop['name']
         field.write = '%s = %s' % (prop['name'], '%s')
         field.read_sub = '%s[%s]' % (prop['name'], '%s')

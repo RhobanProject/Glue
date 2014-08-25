@@ -7,6 +7,16 @@
         },
         {
             "id": 2,
+            "type": "Gain",
+            "values": {"gain": 2.0}
+        },
+        {
+            "id": 3,
+            "type": "Add",
+            "values": {}
+        },
+        {
+            "id": 4,
             "type": "Printer",
             "values": {}
         }
@@ -17,6 +27,27 @@
             "block1": 1,
             "connector1": ["value"],
             "block2": 2,
+            "connector2": ["value"]
+        },
+        {
+            "id": 2,
+            "block1": 2,
+            "connector1": ["output"],
+            "block2": 3,
+            "connector2": ["terms", 0]
+        },
+        {
+            "id": 3,
+            "block1": 2,
+            "connector1": ["output"],
+            "block2": 3,
+            "connector2": ["terms", 1]
+        },
+        {
+            "id": 4,
+            "block1": 3,
+            "connector1": ["sum"],
+            "block2": 4,
             "connector2": ["print"]
         }
     ]

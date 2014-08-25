@@ -21,7 +21,9 @@ namespace Glue
         std::string to_type = to->glue_input_type(to_index);
 
         if (from_type == "" || to_type == "") {
-            throw std::string("Can't create an edge, I/O may not exist");
+            std::ostringstream oss;
+            oss << "Can't connect I/O " << start << " (" << from_type << ") to " << end << " (" << to_type <<")";
+            throw oss.str();
         }
 
         if (!glue_is_convertible(from_type, to_type)) {
@@ -29,6 +31,9 @@ namespace Glue
             oss << "Type " << from_type << " can't be converted to " << to_type;
             throw oss.str();
         }
+
+        from->glue_prepare(from_index, from_subindex);
+        to->glue_prepare(to_index, to_subindex);
 
         LinkBase *link = glue_link(to_type, from, from_index, from_subindex, to, to_index, to_subindex);
         link->id = linkId;

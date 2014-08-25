@@ -28,6 +28,8 @@ namespace Glue
 
             std::string glue_input_type(int index);
             std::string glue_output_type(int index);
+            
+            void glue_prepare(int index, int subindex);
     };  
 }
 

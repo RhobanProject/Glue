@@ -63,7 +63,8 @@ namespace Glue
     }
 
 {% for type in block.types %}
-    {{ type }} Glue{{ block.name }}::glue_get_{{ type|te }}(int index, int subindex) {
+    {{ type }} Glue{{ block.name }}::glue_get_{{ type|te }}(int index, int subindex)
+    {
         switch (index) {
             {% for field in block.fields.values() %}
             {% if field.is_output() and field.type==type %}
@@ -84,7 +85,8 @@ namespace Glue
         throw oss.str();
     }
 
-    void Glue{{ block.name }}::glue_set_{{ type|te }}(int index, int subindex, {{ type }} _glue_value) {
+    void Glue{{ block.name }}::glue_set_{{ type|te }}(int index, int subindex, {{ type }} _glue_value)
+    {
         switch (index) {
             {% for field in block.fields.values() %}
             {% if field.is_input() and field.type==type %}
@@ -96,5 +98,18 @@ namespace Glue
         }
     }
 {% endfor %}
+
+    void Glue{{ block.name }}::glue_prepare(int index, int subindex)
+    {
+        switch (index) {
+            {% for field in block.fields.values() %}
+            {% if field.prepare %}
+            case INDEX_{{ field.name|upper }}:
+                {{ field.get_prepare("subindex") }};
+            break;
+            {% endif %}
+            {% endfor %}
+        }
+    }
 {% endfor %}
 }
