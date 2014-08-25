@@ -138,20 +138,20 @@ namespace Glue
         
     void Scene::loadConnector(Json::Value connector, std::string *index, int *subindex)
     {
-        if (connector.size()>2 || connector.size()==0) {
+        if (connector.size()>3 || connector.size()==0) {
             throw std::string("Bad connector size");
         }
         if (!connector[0].isString()) {
             throw std::string("Connector first index should be a string");
         }
-        if (connector.size()==2 && !connector[1].isInt()) {
+        if (connector.size()==3 && !connector[2].isInt()) {
             throw std::string("Connector second index should be an int");
         }
 
         *index = connector[0].asString();
 
-        if (connector.size()==2) {
-            *subindex = connector[1].asInt();
+        if (connector.size()==3) {
+            *subindex = connector[2].asInt();
         }
     }
 

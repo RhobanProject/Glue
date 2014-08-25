@@ -74,6 +74,9 @@ class GlueField:
             del meta['default']
         self.meta = meta
 
+    def attributes(self):
+        return ' '.join(self.attrs)
+
     def add_attr(self, attr):
         if attr not in self.attrs:
             self.attrs += [attr]
@@ -394,5 +397,5 @@ class Glue:
         for name, blocks in self.files.items():
             self.render('Block.h', 'Glue'+name+'.h', {'file': name, 'blocks': blocks})
             self.render('Block.cpp', 'Glue'+name+'.cpp', {'file': name, 'blocks': blocks})
-        self.render('blocks.json')
+        self.render('glue.js')
 

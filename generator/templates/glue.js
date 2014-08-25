@@ -1,4 +1,4 @@
-[
+var glue_blocks = [
 {% for block in glue.blocks.values() %}
 // Block {{ block.name }} defined in
 // {{ block.file }}
@@ -18,9 +18,9 @@
         "{{ name }}": {{ meta }},
         {% endfor %}
         {% if field.is_editable() %}
-        "default": {{ field.default }},
+        "defaultValue": {{ field.default }},
         {% endif %}
-        "attrs": [{% for attr in field.attrs %}"{{ attr }}"{% if not loop.last %},{% endif %}{% endfor %}]
+        "attrs": "{{ field.attributes() }}"
     }{% if not loop.last %},{% endif %}
 
     {% endfor %}
@@ -28,4 +28,16 @@
 }{% if not loop.last %},{% endif%}
 
 {% endfor %}
-]
+];
+
+var glue_convertibles = {
+    {% for from_type, types in glue.compatibilities.items() %}
+    "{{ from_type|te }}": [
+    {% for to_type in types %}
+    "{{ to_type|te }}"
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
+    ]
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
+};
