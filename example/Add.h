@@ -5,14 +5,14 @@
 
 /**
  * Glue:Block(description=
- * Output is the sum of its imputs
+ * "Output is the sum of its imputs"
  * )
  */
 class Add
 {
     public:
         /**
-         * Glue:Input()
+         * Glue:Input(extensible=true)
          */
         std::vector<int> terms;
 

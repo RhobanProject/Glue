@@ -1,0 +1,31 @@
+[
+{% for block in glue.blocks.values() %}
+// Block {{ block.name }} defined in
+// {{ block.file }}
+{
+    "name": "{{ block.name }}",
+    "family": "{{ block.family }}",
+    {% for name, meta in block.meta.items() %}
+    "{{ name }}": {{ meta }},
+    {% endfor %}
+
+    "fields": [
+    {% for name, field in block.fields.items() %}
+    {
+        "name": "{{ field.name }}",
+        "type": "{{ field.type|te }}{% if field.multiple %}[]{% endif %}",
+        {% for name, meta in field.meta.items() %}
+        "{{ name }}": {{ meta }},
+        {% endfor %}
+        {% if field.is_editable() %}
+        "default": {{ field.default }},
+        {% endif %}
+        "attrs": [{% for attr in field.attrs %}"{{ attr }}"{% if not loop.last %},{% endif %}{% endfor %}]
+    }{% if not loop.last %},{% endif %}
+
+    {% endfor %}
+    ]
+}{% if not loop.last %},{% endif%}
+
+{% endfor %}
+]

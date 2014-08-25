@@ -54,7 +54,7 @@ class GlueAnnotation:
         return params
 
 class GlueField:
-    def __init__(self, typeName, name):
+    def __init__(self, typeName, name, meta):
         self.type = typeName
         self.name = name
         self.default = None
@@ -66,6 +66,17 @@ class GlueField:
         self.attrs = []
         self.multiple = False
         self.convertible = []
+        if 'name' in meta:
+            self.name = meta['name']
+            del meta['name']
+        if 'default' in meta:
+            self.set_default(meta['default'])
+            del meta['default']
+        self.meta = meta
+
+    def add_attr(self, attr):
+        if attr not in self.attrs:
+            self.attrs += [attr]
 
     def get_prepare(self, subindex):
         if self.prepare:
@@ -82,7 +93,7 @@ class GlueField:
 
     def set_default(self, default):
         self.default = default
-        self.attrs += ['editable']
+        self.add_attr('editable')
 
     def is_input(self):
         return ('input' in self.attrs)
@@ -115,10 +126,14 @@ class GlueBlock:
     def __init__(self, meta, name, namespace):
         self.classname = name
         self.fullclass = name
-        if 'family' not in meta:
-            meta['family'] = 'core'
+        if 'family' in meta:
+            family = meta['family']
+            del meta['family']
+        else:
+            family = 'core'
         if 'name' in meta:
             name = meta['name']
+            del meta['name']
         self.name = name
         self.namespace = namespace
         if namespace:
@@ -126,7 +141,7 @@ class GlueBlock:
         self.fields = {}
         self.types = []
         self.meta = meta
-        self.family = self.meta['family']
+        self.family = family
         self.file = ''
 
     def id(self):
@@ -142,14 +157,9 @@ class GlueBlock:
         else:
             self.add_type(typeName)
             default = None
-            if 'name' in annotation.params:
-                name = annotation.params['name']
-            field = GlueField(typeName, name)
+            field = GlueField(typeName, name, annotation.params)
             self.fields[name] = field
-        
-        if 'default' in annotation.params:
-            field.set_default(annotation.params['default'])
-
+       
         return field
 
     def add_input_method(self, method, annotation):
@@ -169,7 +179,7 @@ class GlueBlock:
         field.multiple = multiple
         field.write = '%s(%s)' % (method['name'], '%s')
         field.write_sub = '%s(%s, %s)' % (method['name'], '%s', '%s')
-        field.attrs += ['input']
+        field.add_attr('input')
 
     def add_output_method(self, method, annotation):
         multiple = False
@@ -185,7 +195,7 @@ class GlueBlock:
         field.multiple = multiple
         field.read = '%s()' % method['name']
         field.read_sub = '%s(%s)' % (method['name'], '%s')
-        field.attrs += ['output']
+        field.add_attr('output')
     
     def add_parameter_method(self, method, annotation):
         if len(method['parameters']) != 1:
@@ -193,7 +203,7 @@ class GlueBlock:
                     % (self.name, method['name']))
         param = method['parameters'][0]
         field = self.create_field(param['type'], method['name'], annotation)
-        field.attrs += ['editable']
+        field.add_attr('editable')
         field.write = '%s(%s)' % (method['name'], '%s')
 
     def add_input_prop(self, prop, annotation):
@@ -215,7 +225,7 @@ class GlueBlock:
         field.write = '%s = %s' % (prop['name'], '%s')
         field.read_sub = '%s[%s]' % (prop['name'], '%s')
         field.write_sub = '%s[%s] = %s' % (prop['name'], '%s', '%s')
-        field.attrs += ['input']
+        field.add_attr('input')
 
     def add_output_prop(self, prop, annotation):
         multiple = False
@@ -236,11 +246,11 @@ class GlueBlock:
         field.write = '%s = %s' % (prop['name'], '%s')
         field.read_sub = '%s[%s]' % (prop['name'], '%s')
         field.write_sub = '%s[%s] = %s' % (prop['name'], '%s', '%s')
-        field.attrs += ['output']
+        field.add_attr('output')
 
     def add_parameter_prop(self, prop, annotation):
         field = self.create_field(prop['type'], prop['name'], annotation)
-        field.attrs += ['editable']
+        field.add_attr('editable')
         field.write = '%s = %s' % (prop['name'], '%s')
 
     @classmethod
@@ -287,6 +297,8 @@ class Glue:
         loader = FileSystemLoader(templates_dir)
         self.env = Environment(loader=loader)
         self.env.filters['te'] = glue_type_escape
+        self.env.lstrip_blocks = True
+        self.env.trim_blocks = True
 
     def is_convertible(self, from_type, to_type):
         if from_type in self.compatibilities:
@@ -382,4 +394,5 @@ class Glue:
         for name, blocks in self.files.items():
             self.render('Block.h', 'Glue'+name+'.h', {'file': name, 'blocks': blocks})
             self.render('Block.cpp', 'Glue'+name+'.cpp', {'file': name, 'blocks': blocks})
+        self.render('blocks.json')
 
