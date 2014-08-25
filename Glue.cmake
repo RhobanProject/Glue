@@ -22,9 +22,11 @@ endmacro()
 
 # Mongoose web support
 add_subdirectory("${GLUE}/mongoose/" mongoose)
+include_directories("${GLUE}/mongoose/")
 
 # Output directory is current build/glue
 set(GLUE_OUTPUT_DIR "${PROJECT_BINARY_DIR}/glue/")
+set(GLUE_WEB_DIR "${PROJECT_BINARY_DIR}/www/")
 include_directories("${GLUE}/include/" "${GLUE_OUTPUT_DIR}")
 
 # Glue generator
@@ -74,17 +76,24 @@ macro(glue_run)
         "${GLUE_OUTPUT_DIR}/GlueTypes.h"
     )
 
-    add_custom_command(
-        OUTPUT ${GLUE_GENERATED_FILES}
-        COMMAND "${GLUE_GENERATOR}" "${GLUE_OUTPUT_DIR}" "${GLUE_COMPATIBILITIES}" "${GLUE_HEADERS}" ${GLUE_FILES}
-        DEPENDS ${GLUE_FILES}
+    set(GLUE_WEB_GENERATED_FILES
+        "${GLUE_WEB_DIR}/js/glue_data.js"
     )
 
+    add_custom_command(
+        OUTPUT ${GLUE_GENERATED_FILES} ${GLUE_WEB_GENERATED_FILES}
+        COMMAND "${GLUE_GENERATOR}" "${GLUE}" "${GLUE_OUTPUT_DIR}" 
+            "${GLUE_WEB_DIR}" "${GLUE_COMPATIBILITIES}" "${GLUE_HEADERS}" ${GLUE_FILES}
+        DEPENDS ${GLUE_FILES}
+    )
+    
     set (GLUE_SOURCES
         ${GLUE_GENERATED_FILES}
         ${GLUE_ADDITIONAL}
-        "${GLUE}/src/Scene.cpp"
         "${GLUE}/src/deserialize.cpp"
+        "${GLUE}/src/Controller.cpp"
+        "${GLUE}/src/Scene.cpp"
+        "${GLUE}/src/Server.cpp"
     )
 
     add_library(glue ${GLUE_SOURCES})

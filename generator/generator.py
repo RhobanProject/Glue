@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys, os
+import sys, os, shutil
 from glue import Glue
 
 # The Glue generator, generates:
@@ -18,23 +18,31 @@ from glue import Glue
 glue = Glue()
 
 # Getting output directory, creating it if necessary
-output_dir = sys.argv[1]
+glue_dir = sys.argv[1]
+
+# Getting output directory, creating it if necessary
+output_dir = sys.argv[2]
 if not os.path.isdir(output_dir):
     os.makedirs(output_dir)
 
+# Getting output directory for web files
+web_dir = sys.argv[3]
+if os.path.isdir(web_dir):
+    shutil.rmtree(web_dir)
+
 # Type compatibilities
-compatibilities = sys.argv[2]
+compatibilities = sys.argv[4]
 if compatibilities != ' ':
     glue.set_compatibilities(compatibilities)
 
 # Additional headers
-headers = sys.argv[3]
+headers = sys.argv[5]
 if headers != ' ':
     glue.headers = headers.split(',')
 
 # Parse the headers
-files = sys.argv[4:]
+files = sys.argv[6:]
 for headerFile in files:
     glue.parse(headerFile)
 
-glue.generate_files(output_dir)
+glue.generate_files(glue_dir, output_dir, web_dir)

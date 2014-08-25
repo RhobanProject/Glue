@@ -7,7 +7,7 @@
 namespace Pouet
 {
 /**
- * Glue:Block(family=core; size="small"; description=
+ * Glue:Block(family=Math; size="small"; description=
  * "A simple constant,
  * this will output the value"
  * )

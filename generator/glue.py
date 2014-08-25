@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import re, sys, os, codecs
+import re, sys, os, codecs, shutil
 from jinja2 import Template, FileSystemLoader, Environment
 from CppHeaderParser import CppHeaderParser3 as headerParser
 
@@ -358,7 +358,7 @@ class Glue:
             if annotation.name == 'Block':
                 self.add_block(GlueBlock.create(annotation, classInfo))
 
-    def render(self, tplname, filename=None, variables={}):
+    def render(self, tplname, filename=None, variables={}, web=False):
         if filename == None:
             filename = tplname
         template = self.env.get_template(tplname)
@@ -367,7 +367,11 @@ class Glue:
 
         # Avoid rendering if the file already exist and has
         # the same contents
-        filename = os.path.join(self.output_dir, filename)
+        if web:
+            output_dir = self.web_dir
+        else:
+            output_dir = self.output_dir
+        filename = os.path.join(output_dir, filename)
         try:
             f = codecs.open(filename, 'r', 'utf-8')
             if data == f.read():
@@ -387,9 +391,10 @@ class Glue:
                         field.add_convertible(to_type)
                         block.add_type(to_type)
 
-    def generate_files(self, output_dir):
+    def generate_files(self, glue_dir, output_dir, web_dir):
         self.apply_compatibilities()
         self.output_dir = output_dir
+        self.web_dir = web_dir
         self.render('convert.h')
         self.render('deserialize.h')
         self.render('glue.cpp')
@@ -397,5 +402,7 @@ class Glue:
         for name, blocks in self.files.items():
             self.render('Block.h', 'Glue'+name+'.h', {'file': name, 'blocks': blocks})
             self.render('Block.cpp', 'Glue'+name+'.cpp', {'file': name, 'blocks': blocks})
-        self.render('glue.js')
+        shutil.copytree(os.path.join(glue_dir, 'www'), web_dir)
+        shutil.copytree(os.path.join(glue_dir, 'blocks.js'), os.path.join(web_dir, 'blocks.js'))
+        self.render('glue.js', 'js/glue_data.js', {}, True)
 

@@ -4,7 +4,7 @@
 #include <string>
 
 /**
- * Glue:Block(family=core)
+ * Glue:Block(family=Output)
  */
 class Printer
 {

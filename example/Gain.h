@@ -2,7 +2,7 @@
 #define _GAIN_H
 
 /**
- * Glue:Block(description="Output is gain*input")
+ * Glue:Block(family=Math; description="Output is gain*input")
  */
 class Gain
 {

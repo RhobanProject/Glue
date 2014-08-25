@@ -4,7 +4,7 @@
 #include <vector>
 
 /**
- * Glue:Block(description=
+ * Glue:Block(family=Math; description=
  * "Output is the sum of its imputs"
  * )
  */
