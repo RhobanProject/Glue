@@ -38,7 +38,7 @@ namespace Glue
             {% for field in block.fields.values() %}
             {% if field.is_input() %}
             case INDEX_{{ field.name|upper }}:
-                return "{{ field.type }}";
+                return "{{ field.accessor_type() }}";
             break;
             {% endif %}
             {% endfor %}
@@ -53,7 +53,7 @@ namespace Glue
             {% for field in block.fields.values() %}
             {% if field.is_output() %}
             case INDEX_{{ field.name|upper }}:
-                return "{{ field.type }}";
+                return "{{ field.accessor_type() }}";
             break;
             {% endif %}
             {% endfor %}
@@ -67,14 +67,14 @@ namespace Glue
     {
         switch (index) {
             {% for field in block.fields.values() %}
-            {% if field.is_output() and field.type==type %}
+            {% if field.is_output() and field.accessor_type()==type %}
             case INDEX_{{ field.name|upper }}:
                 return {{ field.get_sub("subindex") }};
             break;
             {% endif %}
             {% if field.is_output() and field.is_convertible_to(type) %}
             case INDEX_{{ field.name|upper }}:
-                return Glue::glue_convert_{{ field.type|te }}_{{ type|te }}({{ field.get_sub("subindex") }});
+                return Glue::glue_convert_{{ field.accessor_type()|te }}_{{ type|te }}({{ field.get_sub("subindex") }});
             break;
             {% endif %}
             {% endfor %}
@@ -89,7 +89,7 @@ namespace Glue
     {
         switch (index) {
             {% for field in block.fields.values() %}
-            {% if field.is_input() and field.type==type %}
+            {% if field.is_input() and field.accessor_type()==type %}
             case INDEX_{{ field.name|upper }}:
                 {{ field.set_sub("_glue_value", "subindex") }};
             break;

@@ -7,7 +7,7 @@ from CppHeaderParser import CppHeaderParser3 as headerParser
 def glue_type_escape(typename):
     if typename=='std::string':
         return 'string'
-    return typename.replace('*', 'star').replace(' ', '_').replace('::', '__')
+    return typename.replace('*', 'star').replace(' ', '_').replace('::', '__').replace('<','_').replace('>','_')
 
 def glue_error(message):
     print("Glue fatal error: %s\n" % message)
@@ -54,7 +54,7 @@ class GlueAnnotation:
         return params
 
 class GlueField:
-    def __init__(self, typeName, name, meta):
+    def __init__(self, typeName, name):
         self.type = typeName
         self.name = name
         self.default = None
@@ -65,14 +65,31 @@ class GlueField:
         self.prepare = ''
         self.attrs = []
         self.multiple = False
-        self.convertible = []
-        if 'name' in meta:
-            self.name = meta['name']
-            del meta['name']
-        if 'default' in meta:
-            self.set_default(meta['default'])
-            del meta['default']
-        self.meta = meta
+        self.convertible = []        
+        self.itemType = self.type
+        self.meta = {}
+
+    def add_meta(self, meta):
+        for entry, value in meta.items():
+            if entry == 'default':
+                self.default = value
+            elif entry == 'multiple':
+                self.multiple=True
+                if self.type.startswith('std::map<'):
+                    self.itemType = self.type[9:-1]
+                    self.multiple = True
+                if self.type.startswith('std::vector<'):
+                    self.prepare = '%s.resize(%s+1)' % (self.name, '%s')
+                    self.itemType = self.type[12:-1]
+                    self.multiple = True
+            else:
+                self.meta[entry] = value
+
+    def accessor_type(self):
+        if self.multiple:
+            return self.itemType
+        else:
+            return self.type
 
     def attributes(self):
         return ' '.join(self.attrs)
@@ -93,10 +110,6 @@ class GlueField:
 
     def is_convertible_to(self, to):
         return (to in self.convertible)
-
-    def set_default(self, default):
-        self.default = default
-        self.add_attr('editable')
 
     def is_input(self):
         return ('input' in self.attrs)
@@ -155,96 +168,78 @@ class GlueBlock:
             self.types += [typeName]
 
     def create_field(self, typeName, name, annotation):
+        params = annotation.params
+
+        if 'name' in params:
+            name = params['name']
+            del params['name']
+
         if name in self.fields:
             field = self.fields[name]
         else:
-            self.add_type(typeName)
             default = None
-            field = GlueField(typeName, name, annotation.params)
-            self.fields[name] = field
+            field = GlueField(typeName, name)
+            self.fields[field.name] = field
+            self.add_type(field.accessor_type())
+
+        field.add_meta(params)
        
         return field
 
     def add_input_method(self, method, annotation):
+        typeName = None
         multiple = False
         if len(method['parameters']) == 0 or len(method['parameters'])>2:
             glue_error("Input method %s::%s() should have one or two arguments"
                     % (self.name, method['name']))
         if len(method['parameters'])==1:
             param = method['parameters'][0]
+            typeName = param['type']
         if len(method['parameters'])==2:
+            multiple = True
             if method['parameters'][0]['type'] != 'int':
                 glue_error('Input method %s::%s() is multiple, first argument should be int'
                     % (self.name, method['name']))
             param = method['parameters'][1]
-            multiple = True
+            typeName = 'std::vector<'+param['type']+'>'
         field = self.create_field(param['type'], method['name'], annotation)
-        field.multiple = multiple
+        if multiple:
+            field.multiple = True
         field.write = '%s(%s)' % (method['name'], '%s')
         field.write_sub = '%s(%s, %s)' % (method['name'], '%s', '%s')
         field.add_attr('input')
 
     def add_output_method(self, method, annotation):
+        typeName = method['rtnType']
         multiple = False
         if len(method['parameters']) > 1:
             glue_error("Output method %s::%s() should take 0 or 1 argument"
                     % (self.name, method['name']))
         if len(method['parameters'])==1:
+            multiple = True
             if method['parameters'][0]['type'] != 'int':
                 glue_error("Output method %s::%s() is multiple, its argument should be int"
                         % (self.name, method['name']))
-            multiple = True
+            typeName = 'std::vector<'+typeName+'>'
         field = self.create_field(method['rtnType'], method['name'], annotation)
-        field.multiple = multiple
+        if multiple:
+            field.multiple = True
         field.read = '%s()' % method['name']
         field.read_sub = '%s(%s)' % (method['name'], '%s')
         field.add_attr('output')
     
-    def add_parameter_method(self, method, annotation):
-        if len(method['parameters']) != 1:
-            glue_error("Parameter method %s::%s() should have exactly one argument"
-                    % (self.name, method['name']))
-        param = method['parameters'][0]
-        field = self.create_field(param['type'], method['name'], annotation)
-        field.add_attr('editable')
-        field.write = '%s(%s)' % (method['name'], '%s')
-
     def add_input_prop(self, prop, annotation):
-        multiple = False
-        prepare = ''
         typeName = prop['type']
-        if typeName.startswith('std::map<'):
-            typeName = typeName[9:-1]
-            multiple = True
-        if typeName.startswith('std::vector<'):
-            prepare = '%s.resize(%s+1)' % (prop['name'], '%s')
-            typeName = typeName[12:-1]
-            multiple = True
         field = self.create_field(typeName, prop['name'], annotation)
-        field.multiple = multiple
         field.read = '%s' % prop['name']
-        if prepare:
-            field.prepare = prepare
         field.write = '%s = %s' % (prop['name'], '%s')
         field.read_sub = '%s[%s]' % (prop['name'], '%s')
         field.write_sub = '%s[%s] = %s' % (prop['name'], '%s', '%s')
         field.add_attr('input')
 
     def add_output_prop(self, prop, annotation):
-        multiple = False
         typeName = prop['type']
-        prepare = ''
-        if typeName.startswith('std::map<'):
-            typeName = typeName[9:-1]
-            multiple = True
-        if typeName.startswith('std::vector<'):
-            prepare = '%s.resize(%s+1)' % (prop['name'], '%s')
-            typeName = typeName[12:-1]
-            multiple = True
         field = self.create_field(typeName, prop['name'], annotation)
-        field.multiple = multiple
-        if prepare:
-            field.prepare = prepare
         field.read = '%s' % prop['name']
         field.write = '%s = %s' % (prop['name'], '%s')
         field.read_sub = '%s[%s]' % (prop['name'], '%s')
@@ -270,7 +265,7 @@ class GlueBlock:
                     if annotation.name == 'Output':
                         block.add_output_method(method, annotation)
                     if annotation.name == 'Parameter':
-                        block.add_parameter_method(method, annotation)
+                        glue_error('Parameter can not be applied to methods')
         
         for visible in data['properties']:
             for prop in data['properties'][visible]:

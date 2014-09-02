@@ -16,9 +16,17 @@ class Constant
 {
     public:
         /**
-         * Glue:Output(default=12)
+         * Glue:Input()
+         * Glue:Output()
+         * Glue:Parameter(default=12)
          */
         float value;
+
+        /**
+         * Glue:Parameter(default=[1,2,3])
+         * Glue:Input(multiple)
+         */
+        std::vector<int> test;
 };
 }
 

@@ -22,6 +22,7 @@ glue_is_convertible(float "std::string")
 set(ALL_SOURCES
     convert.cpp
     main.cpp
+    Constant.cpp
     Printer.cpp
     Gain.cpp
     Add.cpp
