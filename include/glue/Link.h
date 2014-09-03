@@ -2,13 +2,13 @@
 #define _GLUE_LINK_H
 
 #include "glue.h"
+#include "Tick.h"
 
 namespace Glue
 {
-    class LinkBase
+    class LinkBase : public Tick
     {
         public:
-            virtual void tick()=0;
             int id;
     };
 
@@ -23,7 +23,7 @@ namespace Glue
             {
             }
 
-            void tick()
+            void glue_tick()
             {
                 T tmp = glue_getter<T>(from, from_index, from_subindex);
                 glue_setter<T>(to, to_index, to_subindex, tmp);

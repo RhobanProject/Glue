@@ -167,7 +167,7 @@ namespace Glue
     void Scene::tick()
     {
         for (auto link : links) {
-            link.second->tick();
+            link.second->glue_tick();
         }
     }
 }
