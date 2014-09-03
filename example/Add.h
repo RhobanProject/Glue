@@ -12,14 +12,14 @@ class Add
 {
     public:
         /**
-         * Glue:Input(extensible=true)
+         * Glue:Input(multiple; extensible)
          */
-        std::vector<int> terms;
+        std::vector<float> terms;
 
         /**
          * Glue:Output()
          */
-        int sum();
+        float sum();
 };
 
 #endif

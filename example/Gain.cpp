@@ -3,5 +3,6 @@
 
 float Gain::output()
 {
+    printf("Gain=%f Value=%f\n", gain, value);
     return gain*value;
 }

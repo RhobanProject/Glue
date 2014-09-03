@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "Add.h"
 
-int Add::sum()
+float Add::sum()
 {
-    int s = 0;
+    float s = 0;
     for (unsigned int i=0; i<terms.size(); i++) {
         s += terms[i];
     }
