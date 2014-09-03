@@ -9,6 +9,9 @@ namespace Glue
         if (data.isNumeric()) {
             value = data.asFloat();
             return true;
+        } else if (data.isString()) {
+            value = atof(data.asString().c_str());
+            return true;
         } else {
             return false;
         }
@@ -19,6 +22,9 @@ namespace Glue
         if (data.isNumeric()) {
             value = data.asInt();
             return true;
+        } else if (data.isString()) {
+            value = atoi(data.asString().c_str());
+            return true;
         } else {
             return false;
         }
@@ -28,6 +34,10 @@ namespace Glue
     {
         if (data.isBool()) {
             value = data.asBool();
+            return true;
+        } else if (data.isString()) {
+            std::string str = data.asString();
+            value = !(str == "0" || str == "false" || str == "");
             return true;
         } else {
             return false;
