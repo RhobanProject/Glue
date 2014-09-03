@@ -13,7 +13,7 @@ var glue_blocks = [
     {% for name, field in block.fields.items() %}
     {
         "name": "{{ field.name }}",
-        "type": "{{ field.type|te }}{% if field.multiple %}[]{% endif %}",
+        "type": "{{ field.accessor_type()|te }}{% if field.multiple %}[]{% endif %}",
         {% for name, meta in field.meta.items() %}
         "{{ name }}": {{ meta }},
         {% endfor %}

@@ -83,6 +83,8 @@ class GlueField:
                     self.itemType = self.type[12:-1]
                     self.multiple = True
             else:
+                if type(value) == bool:
+                    value = {True: 'true', False: 'false'}[value]
                 self.meta[entry] = value
 
     def accessor_type(self):
