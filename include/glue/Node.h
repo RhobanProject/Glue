@@ -3,10 +3,11 @@
 
 #include <string>
 #include <json/json.h>
+#include "Tick.h"
 
 namespace Glue
 {
-    class Node
+    class Node : public Tick
     {
         public:
             /**
@@ -29,6 +30,11 @@ namespace Glue
              * Node identifier
              */
             int glue_id;
+
+            /**
+             * Ticking the node
+             */
+            void glue_tick(float elapsed) {}
     };
 }
 

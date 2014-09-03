@@ -23,7 +23,7 @@ namespace Glue
             {
             }
 
-            void glue_tick()
+            void glue_tick(float elapsed)
             {
                 T tmp = glue_getter<T>(from, from_index, from_subindex);
                 glue_setter<T>(to, to_index, to_subindex, tmp);

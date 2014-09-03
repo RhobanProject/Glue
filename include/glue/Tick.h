@@ -6,7 +6,7 @@ namespace Glue
     class Tick
     {
         public:
-            virtual void glue_tick()=0;
+            virtual void glue_tick(float elapsed)=0;
     };
 }
 
