@@ -144,13 +144,22 @@ class TestGlue(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.get_output('web/index.html')))
 
     """
-    Testing that unknown annotations raise errors
+    Testing that raise errors
     """
-    def test_glue_bad_annotations(self):
+    def test_glue_errors(self):
         glue = Glue()
         self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadAnnotation1.h')))
         self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadAnnotation2.h')))
         self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadAnnotation3.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadField1.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadField2.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadField3.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadField4.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadField5.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadField6.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadEvent1.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadEvent2.h')))
+        self.assertRaises(GlueException, lambda: glue.parse(self.get_file('files/BadEvent3.h')))
 
     # Helpers
 

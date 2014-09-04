@@ -189,8 +189,11 @@ class GlueBlock:
     def all_events(cls):
         return ['load', 'unload', 'start', 'stop']
 
-    def add_event_method(self, event, method):
+    def add_event_method(self, event, method, check=True):
         name = method['name']
+        if check and len(method['parameters']):
+            glue_error('Event method %s::%s() should not take any parameters'
+                    % (self.name, name))
         if event not in self.events:
             self.events[event] = []
         self.events[event] += [name]
@@ -198,17 +201,19 @@ class GlueBlock:
     def add_tick_method(self, method):
         name = method['name']
         if len(method['parameters'])>1:
-            glue_error('Tick method '+name+' for block '+self.name+' should take 0 or 1 parameters')
+            glue_error('Tick method %s::%s() should take 0 or 1 parameters'
+                    % (self.name, name))
         if len(method['parameters']):
             type = method['parameters'][0]['type']
             if type == 'int':
-                self.add_event_method('tick_int', method)
+                self.add_event_method('tick_int', method, False)
             elif type == 'float' or type == 'double':
-                self.add_event_method('tick_float', method)
+                self.add_event_method('tick_float', method, False)
             else:
-                glue_error('Unsuported tick type: '+type+' in block '+self.name)
+                glue_error('Tick method %s::%s() has unsupported parameter type %s'
+                        % (self.name, name, type))
         else:
-            self.add_event_method('tick', method)
+            self.add_event_method('tick', method, False)
 
     def get_event_methods(self, event):
         return self.events.get(event, [])
@@ -265,6 +270,9 @@ class GlueBlock:
     def add_output_method(self, method, annotation):
         typeName = method['rtnType']
         multiple = False
+        if typeName == 'void':
+            glue_error("Output method %s::%s() should not return void"
+                    % (self.name, method['name']))
         if len(method['parameters']) > 1:
             glue_error("Output method %s::%s() should take 0 or 1 argument"
                     % (self.name, method['name']))
