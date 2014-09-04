@@ -9,9 +9,11 @@ def glue_type_escape(typename):
         return 'string'
     return typename.replace('*', 'star').replace(' ', '_').replace('::', '__').replace('<','_').replace('>','_')
 
+class GlueException(Exception):
+    pass
+
 def glue_error(message):
-    print("Glue fatal error: %s\n" % message)
-    exit(1)
+    raise GlueException('Glue fatal error: %s\n' % message)
 
 class GlueAnnotation:
     def __init__(self, name, params):
@@ -323,7 +325,7 @@ class GlueBlock:
                         elif annotation.name.lower() in GlueBlock.all_events():
                             block.add_event_method(annotation.name.lower(), method)
                         else:
-                            glue_error('Unknown annotation: '+annotation.name)
+                            glue_error('Unknown annotation: "'+annotation.name+'" on method '+method['name'])
         
         for visible in data['properties']:
             for prop in data['properties'][visible]:
@@ -337,7 +339,7 @@ class GlueBlock:
                         elif annotation.name == 'Parameter':
                             block.add_parameter_prop(prop, annotation)
                         else:
-                            glue_error('Unknown annotation: '+annotation.name)
+                            glue_error('Unknown annotation: "'+annotation.name+'" on property '+prop['name'])
                
         return block
 
@@ -414,6 +416,8 @@ class Glue:
             for annotation in annotations:
                 if annotation.name == 'Block':
                     self.add_block(GlueBlock.create(annotation, classInfo))
+                else:
+                    glue_error('Unknown annotation: "'+annotation.name+'" on class '+classInfo['name'])
 
     def render(self, tplname, filename=None, variables={}, web=False):
         if filename == None:
