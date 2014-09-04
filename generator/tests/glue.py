@@ -105,6 +105,7 @@ class TestGlue(unittest.TestCase):
         terms = block.fields['terms']
         self.assertTrue(terms.multiple)
         self.assertTrue('extensible' in terms.meta)
+        self.assertTrue('resize' in terms.get_prepare('0'))
 
     """
     Testing that files are indeed generated
