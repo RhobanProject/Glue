@@ -309,33 +309,35 @@ class GlueBlock:
         
         for visible in data['methods']:
             for method in data['methods'][visible]:
-                annotations = GlueAnnotation.get_annotations(method['doxygen'])
-                for annotation in annotations:
-                    if annotation.name == 'Input':
-                        block.add_input_method(method, annotation)
-                    elif annotation.name == 'Output':
-                        block.add_output_method(method, annotation)
-                    elif annotation.name == 'Parameter':
-                        glue_error('Parameter can not be applied to methods')
-                    elif annotation.name == 'Tick':
-                        block.add_tick_method(method)
-                    elif annotation.name.lower() in GlueBlock.all_events():
-                        block.add_event_method(annotation.name.lower(), method)
-                    else:
-                        glue_error('Unknown annotation: '+annotation.name)
+                if 'doxygen' in method:
+                    annotations = GlueAnnotation.get_annotations(method['doxygen'])
+                    for annotation in annotations:
+                        if annotation.name == 'Input':
+                            block.add_input_method(method, annotation)
+                        elif annotation.name == 'Output':
+                            block.add_output_method(method, annotation)
+                        elif annotation.name == 'Parameter':
+                            glue_error('Parameter can not be applied to methods')
+                        elif annotation.name == 'Tick':
+                            block.add_tick_method(method)
+                        elif annotation.name.lower() in GlueBlock.all_events():
+                            block.add_event_method(annotation.name.lower(), method)
+                        else:
+                            glue_error('Unknown annotation: '+annotation.name)
         
         for visible in data['properties']:
             for prop in data['properties'][visible]:
-                annotations = GlueAnnotation.get_annotations(prop['doxygen'])
-                for annotation in annotations:
-                    if annotation.name == 'Input':
-                        block.add_input_prop(prop, annotation)
-                    elif annotation.name == 'Output':
-                        block.add_output_prop(prop, annotation)
-                    elif annotation.name == 'Parameter':
-                        block.add_parameter_prop(prop, annotation)
-                    else:
-                        glue_error('Unknown annotation: '+annotation.name)
+                if 'doxygen' in prop:
+                    annotations = GlueAnnotation.get_annotations(prop['doxygen'])
+                    for annotation in annotations:
+                        if annotation.name == 'Input':
+                            block.add_input_prop(prop, annotation)
+                        elif annotation.name == 'Output':
+                            block.add_output_prop(prop, annotation)
+                        elif annotation.name == 'Parameter':
+                            block.add_parameter_prop(prop, annotation)
+                        else:
+                            glue_error('Unknown annotation: '+annotation.name)
                
         return block
 
@@ -407,10 +409,11 @@ class Glue:
                     self.deserialize += [field.type]
 
     def parse_class(self, classInfo):
-        annotations = GlueAnnotation.get_annotations(classInfo['doxygen'])
-        for annotation in annotations:
-            if annotation.name == 'Block':
-                self.add_block(GlueBlock.create(annotation, classInfo))
+        if 'doxygen' in classInfo:
+            annotations = GlueAnnotation.get_annotations(classInfo['doxygen'])
+            for annotation in annotations:
+                if annotation.name == 'Block':
+                    self.add_block(GlueBlock.create(annotation, classInfo))
 
     def render(self, tplname, filename=None, variables={}, web=False):
         if filename == None:

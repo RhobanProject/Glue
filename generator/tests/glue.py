@@ -81,6 +81,14 @@ class TestGlue(unittest.TestCase):
         self.assertEqual('float', output.accessor_type())
 
     """
+    Testing that parsing goes right, event with classes without comments
+    """
+    def test_glue_lifecycle(self):
+        glue = Glue()
+        glue.parse(self.get_file('files/Dummy.h'))
+        self.assertEqual(1, len(glue.blocks))
+
+    """
     Testing that files are indeed generated
     It also checks that C++ files have a correct syntax
     """
