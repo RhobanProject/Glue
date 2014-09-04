@@ -12,14 +12,14 @@ namespace Glue
 {
 {% for type in glue.types %}
     template<>    
-        {{ type }} glue_getter<{{ type }}>(Node *node, int index, int subindex)
+        {{ type }} glue_getter<{{ type }} >(Node *node, int index, int subindex)
         {    
             Node_get_{{ type|te }} *n = dynamic_cast<Node_get_{{ type|te }} *>(node);   
             return n->glue_get_{{ type|te }}(index, subindex);
         }    
 
     template<>    
-        void glue_setter<{{ type }}>(Node *node, int index, int subindex, {{ type }} value)   
+        void glue_setter<{{ type }} >(Node *node, int index, int subindex, {{ type }} value)   
         {    
             Node_set_{{ type|te }} *n = dynamic_cast<Node_set_{{ type|te }} *>(node);
             n->glue_set_{{ type|te }}(index, subindex,value);
@@ -31,7 +31,7 @@ namespace Glue
     {
         {% for type in glue.types %}
         if (type == "{{ type }}" ) {
-            return new Link<{{ type }}>(from, from_index, from_subindex, to, to_index, to_subindex);
+            return new Link<{{ type }} >(from, from_index, from_subindex, to, to_index, to_subindex);
         }
         {% endfor %}
 

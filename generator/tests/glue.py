@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import random, unittest, os, shutil
+from subprocess import Popen, PIPE
 from glue import Glue
 
 class TestGlue(unittest.TestCase):
@@ -81,6 +82,7 @@ class TestGlue(unittest.TestCase):
 
     """
     Testing that files are indeed generated
+    It also checks that C++ files have a correct syntax
     """
     def test_glue_generation_basic(self):
         glue = Glue()
@@ -89,15 +91,15 @@ class TestGlue(unittest.TestCase):
         self.generate(glue)
 
         self.assertTrue(os.path.isdir(self.get_output('glue')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/glue.cpp')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/convert.h')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/deserialize.h')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/GlueTypes.h')))
+        self.check_cpp_file('glue/glue.cpp')
+        self.check_cpp_file('glue/convert.h')
+        self.check_cpp_file('glue/deserialize.h')
+        self.check_cpp_file('glue/GlueTypes.h')
 
-        self.assertTrue(os.path.isfile(self.get_output('glue/GlueGain.cpp')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/GlueGain.h')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/GlueGains.cpp')))
-        self.assertTrue(os.path.isfile(self.get_output('glue/GlueGains.h')))
+        self.check_cpp_file('glue/GlueGain.cpp')
+        self.check_cpp_file('glue/GlueGain.h')
+        self.check_cpp_file('glue/GlueGains.cpp')
+        self.check_cpp_file('glue/GlueGains.h')
 
         self.assertTrue(os.path.isdir(self.get_output('web')))
         self.assertTrue(os.path.isdir(self.get_output('web/blocks.js')))
@@ -113,15 +115,35 @@ class TestGlue(unittest.TestCase):
     def get_output(self, filename):
         return os.path.join(self.get_file('output'), filename)
 
+    def get_glue_dir(self):
+        return os.path.join(os.path.dirname(__file__), '..', '..')
+
     def generate(self, glue):
         directory = self.get_file('output')
         if os.path.isdir(directory):
             shutil.rmtree(directory)
-        glue_directory = os.path.join(os.path.dirname(__file__), '..', '..')
+        glue_directory = self.get_glue_dir()
         output_directory = os.path.join(directory, 'glue')
         web_directory = os.path.join(directory, 'web')
         os.makedirs(output_directory)
         glue.generate_files(glue_directory, output_directory, web_directory)
+
+    def check_cpp_file(self, filename):
+        filename = self.get_output(filename)
+        if os.path.isfile(filename):
+            glue_dir = self.get_glue_dir()
+            glue_include = os.path.join(glue_dir, 'include')
+            json_include = os.path.join(glue_dir, 'json/include')
+            cmd = ['g++', '-pedantic', '-I', glue_include, '-I', json_include, '-fsyntax-only', filename]
+            process = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            rtn = process.wait()
+            output = process.stdout.read()
+            output += process.stderr.read()
+            process.stdout.close()
+            process.stderr.close()
+            self.assertEqual(0, rtn, 'Parsing error: '+output.decode('utf-8'))
+        else:
+            self.assertTrue(False, 'File '+filename+' not generated')
 
 if __name__ == '__main__':
     unittest.main()

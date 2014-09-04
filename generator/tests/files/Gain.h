@@ -1,3 +1,5 @@
+#ifndef _TEST_GAIN_H
+#define _TEST_GAIN_H
 
 namespace SomeProject
 {
@@ -8,26 +10,29 @@ namespace SomeProject
      */
     class Gain
     {
-        /**
-         * The gain
-         *
-         * Glue:Parameter(default=1.0)
-         * Glue:Input()
-         */
-        float gain;
+        public:
+            /**
+             * The gain
+             *
+             * Glue:Parameter(default=1.0)
+             * Glue:Input()
+             */
+            float gain;
 
-        /**
-         * The input
-         *
-         * Glue:Input()
-         */
-        float input;
+            /**
+             * The input
+             *
+             * Glue:Input()
+             */
+            float input;
 
-        /**
-         * Computes the output
-         *
-         * Glue:Output(name=output)
-         */ 
-        float getOutput();
+            /**
+             * Computes the output
+             *
+             * Glue:Output(name=output)
+             */ 
+            float getOutput();
     };
 }
+
+#endif

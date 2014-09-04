@@ -2,6 +2,7 @@
 #define _GLUE_DESERIALIZE_H
 #include <string>
 #include <cstdlib>
+#include <json/json.h>
 {% include "headers.cpp" %}
 
 namespace Glue
