@@ -83,10 +83,28 @@ class TestGlue(unittest.TestCase):
     """
     Testing that parsing goes right, event with classes without comments
     """
-    def test_glue_lifecycle(self):
+    def test_glue_dummy(self):
         glue = Glue()
         glue.parse(self.get_file('files/Dummy.h'))
         self.assertEqual(1, len(glue.blocks))
+
+    """
+    Testing that a method annoted with Glue:Tick is correctly taken in account
+    """
+    def test_glue_tick_method(self):
+        glue = Glue()
+        glue.parse(self.get_file('files/Add.h'))
+        self.assertEqual(1, len(glue.blocks))
+        block = list(glue.blocks.values())[0]
+        self.assertEqual(2, len(block.fields))
+        
+        events = block.get_event_methods('tick')
+        self.assertEqual(['compute'], events)
+
+        self.assertTrue('terms' in block.fields)
+        terms = block.fields['terms']
+        self.assertTrue(terms.multiple)
+        self.assertTrue('extensible' in terms.meta)
 
     """
     Testing that files are indeed generated
@@ -96,6 +114,7 @@ class TestGlue(unittest.TestCase):
         glue = Glue()
         glue.parse(self.get_file('files/Gain.h'))
         glue.parse(self.get_file('files/Gains.h'))
+        glue.parse(self.get_file('files/Add.h'))
         self.generate(glue)
 
         self.assertTrue(os.path.isdir(self.get_output('glue')))
@@ -108,6 +127,8 @@ class TestGlue(unittest.TestCase):
         self.check_cpp_file('glue/GlueGain.h')
         self.check_cpp_file('glue/GlueGains.cpp')
         self.check_cpp_file('glue/GlueGains.h')
+        self.check_cpp_file('glue/GlueAdd.h')
+        self.check_cpp_file('glue/GlueAdd.cpp')
 
         self.assertTrue(os.path.isdir(self.get_output('web')))
         self.assertTrue(os.path.isdir(self.get_output('web/blocks.js')))
