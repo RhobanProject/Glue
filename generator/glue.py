@@ -181,6 +181,35 @@ class GlueBlock:
         self.meta = meta
         self.family = family
         self.file = ''
+        self.events = {}
+
+    @classmethod
+    def all_events(cls):
+        return ['load', 'unload', 'start', 'stop']
+
+    def add_event_method(self, event, method):
+        name = method['name']
+        if event not in self.events:
+            self.events[event] = []
+        self.events[event] += [name]
+
+    def add_tick_method(self, method):
+        name = method['name']
+        if len(method['parameters'])>1:
+            glue_error('Tick method '+name+' for block '+self.name+' should take 0 or 1 parameters')
+        if len(method['parameters']):
+            type = method['parameters'][0]['type']
+            if type == 'int':
+                self.add_event_method('tick_int', method)
+            elif type == 'float' or type == 'double':
+                self.add_event_method('tick_float', method)
+            else:
+                glue_error('Unsuported tick type: '+type+' in block '+self.name)
+        else:
+            self.add_event_method('tick', method)
+
+    def get_event_methods(self, event):
+        return self.events.get(event, [])
 
     def id(self):
         return '%s.%s' % (self.family, self.name)
@@ -284,10 +313,16 @@ class GlueBlock:
                 for annotation in annotations:
                     if annotation.name == 'Input':
                         block.add_input_method(method, annotation)
-                    if annotation.name == 'Output':
+                    elif annotation.name == 'Output':
                         block.add_output_method(method, annotation)
-                    if annotation.name == 'Parameter':
+                    elif annotation.name == 'Parameter':
                         glue_error('Parameter can not be applied to methods')
+                    elif annotation.name == 'Tick':
+                        block.add_tick_method(method)
+                    elif annotation.name.lower() in GlueBlock.all_events():
+                        block.add_event_method(annotation.name.lower(), method)
+                    else:
+                        glue_error('Unknown annotation: '+annotation.name)
         
         for visible in data['properties']:
             for prop in data['properties'][visible]:
@@ -295,10 +330,12 @@ class GlueBlock:
                 for annotation in annotations:
                     if annotation.name == 'Input':
                         block.add_input_prop(prop, annotation)
-                    if annotation.name == 'Output':
+                    elif annotation.name == 'Output':
                         block.add_output_prop(prop, annotation)
-                    if annotation.name == 'Parameter':
+                    elif annotation.name == 'Parameter':
                         block.add_parameter_prop(prop, annotation)
+                    else:
+                        glue_error('Unknown annotation: '+annotation.name)
                
         return block
 

@@ -19,7 +19,12 @@ class Add
         /**
          * Glue:Output()
          */
-        float sum();
+        float sum;
+
+        /**
+         * Glue:Tick()
+         */
+        void compute(int elapsed);
 };
 
 #endif

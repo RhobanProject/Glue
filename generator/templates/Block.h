@@ -30,6 +30,12 @@ namespace Glue
             std::string glue_output_type(int index);
             
             void glue_prepare(int index, int subindex);
+            
+            void glue_tick(float elapsed);
+
+            {% for event in block.all_events() %}
+            void glue_{{ event }}();
+            {% endfor %}
     };  
 }
 

@@ -111,5 +111,27 @@ namespace Glue
             {% endfor %}
         }
     }
+
+    void Glue{{ block.name }}::glue_tick(float elapsed)
+    {
+        {% for method in block.get_event_methods("tick") %}
+        {{ method }}();
+        {% endfor %}
+        {% for method in block.get_event_methods("tick_int") %}
+        {{ method }}((int)(elapsed*1000));
+        {% endfor %}
+        {% for method in block.get_event_methods("tick_float") %}
+        {{ method }}(elapsed);
+        {% endfor %}
+    }
+
+    {% for event in block.all_events() %}
+    void Glue{{ block.name }}::glue_{{ event }}()
+    {
+        {% for method in block.get_event_methods(event) %}
+        {{ method }}();
+        {% endfor %}
+    }
+    {% endfor %}
 {% endfor %}
 }

@@ -32,9 +32,13 @@ namespace Glue
             int glue_id;
 
             /**
-             * Ticking the node
+             * Events method
              */
-            void glue_tick(float elapsed) {}
+            virtual void glue_tick(float elapsed)=0;
+            virtual void glue_start()=0;
+            virtual void glue_stop()=0;
+            virtual void glue_load()=0;
+            virtual void glue_unload()=0;
     };
 }
 

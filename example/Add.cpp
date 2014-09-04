@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include "Add.h"
 
-float Add::sum()
+void Add::compute(int e)
 {
-    float s = 0;
+    sum = 0;
     for (unsigned int i=0; i<terms.size(); i++) {
-        s += terms[i];
+        sum += terms[i];
     }
-
-    return s;
 }
