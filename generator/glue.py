@@ -43,14 +43,34 @@ class GlueAnnotation:
         data = ' '.join(fixed_lines)
 
         # Parsing the data
-        parts = data.split(';')
-        for part in parts:
-            if part.strip():
-                equal = part.split('=', 1)
-                if len(equal)>1:
-                    params[equal[0].strip()] = equal[1].strip()
+        state = 0
+        name = ''
+        value = ''
+        escaping=False
+        data += ';'
+        for c in range(0, len(data)):
+            c = data[c]
+            if state == 0: # Reading the name
+                if c == '=':
+                    state = 1
+                elif c == ';': # Next field without value
+                    if name.strip():
+                        params[name.strip()] = True
+                        name = ''
                 else:
-                    params[part.strip()] = True
+                    name += c
+            elif state == 1: # Reading the value
+                if c == ';' and not escaping: # Exiting the field
+                    if name.strip():
+                        params[name.strip()] = value.strip()
+                    name = ''
+                    value = ''
+                    state = 0
+                elif c == '`': # Entering/exiting escaping
+                    escaping = not escaping
+                else:
+                    value += c
+        
         return params
 
 class GlueField:
