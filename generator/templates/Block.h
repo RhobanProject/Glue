@@ -15,7 +15,7 @@ namespace Glue
 {
     class Glue{{ block.name }} : public {{ block.fullclass }}, public Node,
     {% for type in block.types %}
-    public Node_set_{{ type|te }}, public Node_get_{{ type|te }} {% if not loop.last %},{% endif %}
+    public Node_{{ type|te }} {% if not loop.last %},{% endif %}
     {% endfor %}
     {   
         public:

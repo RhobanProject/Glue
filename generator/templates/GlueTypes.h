@@ -13,15 +13,10 @@ namespace Glue
     };
 
     {% for type in glue.types %}
-    class Node_get_{{ type|te }}
+    class Node_{{ type|te }}
     {
         public:
             virtual {{ type }} glue_get_{{ type|te }}(int index, int subindex)=0;
-    };
-    
-    class Node_set_{{ type|te }}
-    {
-        public:
             virtual void glue_set_{{ type|te }}(int index, int subindex, {{ type }} value)=0;
     };
     {% endfor %}

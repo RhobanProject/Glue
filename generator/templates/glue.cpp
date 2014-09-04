@@ -14,14 +14,14 @@ namespace Glue
     template<>    
         {{ type }} glue_getter<{{ type }} >(Node *node, int index, int subindex)
         {    
-            Node_get_{{ type|te }} *n = dynamic_cast<Node_get_{{ type|te }} *>(node);   
+            Node_{{ type|te }} *n = dynamic_cast<Node_{{ type|te }} *>(node);   
             return n->glue_get_{{ type|te }}(index, subindex);
         }    
 
     template<>    
         void glue_setter<{{ type }} >(Node *node, int index, int subindex, {{ type }} value)   
         {    
-            Node_set_{{ type|te }} *n = dynamic_cast<Node_set_{{ type|te }} *>(node);
+            Node_{{ type|te }} *n = dynamic_cast<Node_{{ type|te }} *>(node);
             n->glue_set_{{ type|te }}(index, subindex,value);
         }  
 {% endfor %}
