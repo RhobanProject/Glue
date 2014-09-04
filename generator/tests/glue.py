@@ -66,6 +66,8 @@ class TestGlue(unittest.TestCase):
         self.assertEqual('std::vector<float>', gains.type)
         self.assertEqual('[1]', gains.default)
         self.assertEqual(['editable'], gains.attrs)
+        self.assertTrue(gains.is_editable())
+        self.assertFalse(gains.is_output())
 
         input = block.fields['input']
         self.assertTrue(input.multiple)
@@ -74,11 +76,15 @@ class TestGlue(unittest.TestCase):
         self.assertEqual(['input'], input.attrs)
         self.assertEqual('std::vector<float>', input.type)
         self.assertEqual('float', input.accessor_type())
+        self.assertTrue(input.is_input())
+        self.assertFalse(input.is_editable())
 
         output = block.fields['output']
         self.assertTrue(output.multiple)
         self.assertEqual('float', output.type)
         self.assertEqual('float', output.accessor_type())
+        self.assertEqual(['output'], output.attrs)
+        self.assertFalse(output.is_input())
 
     """
     Testing that parsing goes right, event with classes without comments
