@@ -7,7 +7,9 @@ class TestAnnotations(unittest.TestCase):
     def test_annotation_simple(self):
         test = '''
         /**
+         * Above text
          * Glue:Annotation()
+         * Below text
          */
         '''
         annotations = GlueAnnotation.get_annotations(test)
@@ -17,8 +19,11 @@ class TestAnnotations(unittest.TestCase):
     def test_annotation_multiple(self):
         test = '''
         /**
+        * Blha blha
         * Glue:A(x=1; y=2)
+        * Blha blha
         * Glue:B(m=3; n=2)
+        * Blha blha
         */
         '''
         annotations = GlueAnnotation.get_annotations(test)
