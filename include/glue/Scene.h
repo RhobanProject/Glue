@@ -2,6 +2,7 @@
 #define _GLUE_SCENE_H
 
 #include <map>
+#include <list>
 #include <json/json.h>
 #include "glue.h"
 #include "Node.h"
@@ -28,6 +29,14 @@ namespace Glue
             std::string data;
             std::map<int, Node*> nodes;
             std::map<int, LinkBase*> links;
+
+            typedef std::pair<LinkBase*, Node*> LinkConnection;
+            std::map<int, std::list<LinkConnection>> inLinks;
+            std::map<int, std::list<LinkConnection>> outLinks;
+            std::list<Tick*> tickList;
+
+            void buildTopologicalSort();
+            void visitNode(std::map<Node*,int>& markers, Node* n);
     };
 }
 

@@ -8,6 +8,8 @@ namespace Glue
     void Scene::add(Node *node)
     {
         nodes[node->glue_id] = node;
+        outLinks[node->glue_id] = {};
+        inLinks[node->glue_id] = {};
     }
 
     void Scene::connect(int linkId, int from_id, std::string start, int from_subindex,
@@ -38,6 +40,8 @@ namespace Glue
         LinkBase *link = glue_link(to_type, from, from_index, from_subindex, to, to_index, to_subindex);
         link->id = linkId;
         links[linkId] = link;
+        outLinks[from_id].emplace_back(link, to);
+        inLinks[to_id].emplace_back(link, from);
     }
 
     void Scene::load(std::string content)
@@ -158,6 +162,9 @@ namespace Glue
     void Scene::loadFile(std::string filename)
     {
         std::ifstream ifs(filename.c_str());
+        if (!ifs.is_open()) {
+            throw std::string("Unable to open scene file: " + filename);
+        }
         std::string content((std::istreambuf_iterator<char>(ifs)),
                 (std::istreambuf_iterator<char>()));
 
@@ -166,8 +173,48 @@ namespace Glue
 
     void Scene::tick()
     {
-        for (auto link : links) {
-            link.second->glue_tick(0);
+        //Build topological sort if 
+        //not already done
+        if (tickList.empty()) {
+            buildTopologicalSort();
+        }
+
+        //Call links and nodes tick handler
+        for (auto& t : tickList) {
+            t->glue_tick(0);
+        }
+    }
+            
+    void Scene::buildTopologicalSort()
+    {
+        std::list<Node*> setToVisit;
+        std::map<int, bool> setBeVisited;
+
+        for (auto& n : nodes) {
+            if (inLinks[n.second->glue_id].empty()) {
+                setToVisit.push_back(n.second);
+                setBeVisited[n.second->glue_id] = true;
+            } else {
+                setBeVisited[n.second->glue_id] = false;
+            }
+        }
+        if (setToVisit.empty() && !nodes.empty()) {
+            throw std::string("No leaf node for topological sort");
+        }
+
+        while (!setToVisit.empty()) {
+            Node* n = setToVisit.front();
+            setToVisit.pop_front();
+            for (auto& c : inLinks[n->glue_id]) {
+                tickList.push_back(c.first);
+            }
+            tickList.push_back(n);
+            for (auto& c : outLinks[n->glue_id]) {
+                if (setBeVisited[c.second->glue_id] == false) {
+                    setToVisit.push_back(c.second);
+                    setBeVisited[c.second->glue_id] = true;
+                }
+            }
         }
     }
 }
